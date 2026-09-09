@@ -1,0 +1,305 @@
+---
+import Base from "../layouts/Base.astro";
+import { t, type Locale } from "../i18n";
+import { localeUrl } from "../i18n/routing";
+import { REPO_URL } from "../data/releases";
+import {
+  changelog,
+  byKind,
+  releaseTag,
+  COMPONENTS,
+  type Component,
+  type Entry,
+} from "../data/changelog";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = t(locale);
+
+// The same three, in the same order, as the download page's anchors.
+const label: Record<Component, string> = {
+  desktop: dict.nav.desktop,
+  cli: dict.nav.cli,
+  hub: dict.nav.hub,
+};
+
+const sections = COMPONENTS.map((component) => ({
+  component,
+  log: changelog.components[component],
+}));
+
+const anyMilestones = sections.some(({ log }) =>
+  log.releases.some((release) => !release.published),
+);
+
+const dates = new Intl.DateTimeFormat(locale, {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+});
+
+// Noon UTC, not midnight: a date-only string parses as UTC, and formatting it
+// in a timezone behind UTC would show the previous day.
+function showDate(date: string): string {
+  return dates.format(new Date(`${date}T12:00:00Z`));
+}
+
+const ESCAPES: Record<string, string> = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+};
+
+/**
+ * Entries carry `backtick` spans for commands and flags. They are the one part
+ * of an entry that is identical in all five languages, so they render as code
+ * and are marked untranslatable — a browser offering to translate
+ * `--no-clone-dedupe` would be offering to break it.
+ */
+function withCode(text: string): string {
+  return text
+    .replace(/[&<>"]/g, (character) => ESCAPES[character]!)
+    .replace(/`([^`]+)`/g, '<code translate="no">$1</code>');
+}
+
+function say(entry: Entry): string {
+  return withCode(entry.text[locale]);
+}
+---
+
+<Base
+  locale={locale}
+  page="changelog"
+  title={dict.changelog.title}
+  description={dict.changelog.description}
+>
+  <section class="wrap top">
+    <h1>{dict.changelog.headline}</h1>
+    <p class="lede">{dict.changelog.lede}</p>
+
+    <nav class="jump" aria-label={dict.changelog.headline}>
+      {
+        COMPONENTS.map((component) => (
+          <a href={`#${component}`}>{label[component]}</a>
+        ))
+      }
+    </nav>
+
+    {
+      anyMilestones && (
+        <p class="note">
+          <span class="note-title">{dict.changelog.milestone}</span>
+          {dict.changelog.milestoneNote}
+        </p>
+      )
+    }
+  </section>
+
+  {
+    sections.map(({ component, log }) => (
+      <section class="band" id={component} data-reveal>
+        <div class="wrap">
+          <div class="band-head">
+            <h2>{label[component]}</h2>
+          </div>
+
+          {log.unreleased.length > 0 && (
+            <article class="release">
+              <header>
+                <h3>{dict.changelog.pendingTitle}</h3>
+                <p class="faint meta">{dict.changelog.pendingLede}</p>
+              </header>
+              <div class="groups">
+                {byKind(log.unreleased).map((group) => (
+                  <div class="group">
+                    <h4>{dict.changelog.kinds[group.kind]}</h4>
+                    <ul>
+                      {group.entries.map((entry) => (
+                        <li set:html={say(entry)} />
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </article>
+          )}
+
+          {log.releases.map((release) => (
+            <article class="release">
+              <header>
+                <h3 class="mono" translate="no">
+                  {release.version}
+                </h3>
+                <p class="faint meta">
+                  <time datetime={release.date}>{showDate(release.date)}</time>
+                  {!release.published && (
+                    <>
+                      {" · "}
+                      <em>{dict.changelog.milestone}</em>
+                    </>
+                  )}
+                </p>
+                {release.published && (
+                  <a
+                    class="downloads"
+                    href={`${REPO_URL}/releases/tag/${releaseTag(component, release.version)}`}
+                  >
+                    {dict.changelog.downloads}
+                  </a>
+                )}
+              </header>
+              <div class="groups">
+                {byKind(release.entries).map((group) => (
+                  <div class="group">
+                    <h4>{dict.changelog.kinds[group.kind]}</h4>
+                    <ul>
+                      {group.entries.map((entry) => (
+                        <li set:html={say(entry)} />
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </article>
+          ))}
+
+          <p class="faint all">
+            <a href={`${REPO_URL}/releases`}>{dict.footer.allReleases}</a>
+            {" · "}
+            <a href={localeUrl(locale, "download")}>{dict.nav.download}</a>
+          </p>
+        </div>
+      </section>
+    ))
+  }
+</Base>
+
+<style>
+  .top {
+    padding-block: 56px 8px;
+  }
+
+  .jump {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-top: 22px;
+    font-size: var(--t-sm);
+  }
+
+  .jump a {
+    color: var(--accent-bright);
+    text-decoration: none;
+  }
+
+  .jump a:hover {
+    text-decoration: underline;
+  }
+
+  .note {
+    margin-top: 26px;
+  }
+
+  /* A rule down the left, so a long list of releases reads as one timeline
+     rather than as a stack of unrelated cards. */
+  .release {
+    border-left: 1px solid var(--line);
+    padding: 0 0 30px 22px;
+    margin-left: 4px;
+  }
+
+  .release:last-of-type {
+    padding-bottom: 8px;
+  }
+
+  .release header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+    position: relative;
+  }
+
+  /* The dot sits on the rule, aligned to the version rather than to the block,
+     so it marks the release and not the whitespace above it. */
+  .release header::before {
+    content: "";
+    position: absolute;
+    left: -27px;
+    top: 0.55em;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--line-strong);
+  }
+
+  .release h3 {
+    margin: 0;
+    font-size: var(--t-md);
+  }
+
+  .release h3.mono {
+    font-family: var(--mono);
+    font-weight: 600;
+  }
+
+  .meta {
+    margin: 0;
+    font-size: var(--t-sm);
+  }
+
+  .downloads {
+    margin-left: auto;
+    font-size: var(--t-sm);
+    color: var(--accent-bright);
+    text-decoration: none;
+  }
+
+  .downloads:hover {
+    text-decoration: underline;
+  }
+
+  .group + .group {
+    margin-top: 16px;
+  }
+
+  .group h4 {
+    margin: 0 0 6px;
+    font-size: var(--t-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--faint);
+    font-weight: 600;
+  }
+
+  .group ul {
+    margin: 0;
+    padding-left: 18px;
+    display: grid;
+    gap: 7px;
+  }
+
+  .group li {
+    max-width: var(--prose);
+  }
+
+  .all {
+    font-size: var(--t-sm);
+    margin-top: 30px;
+  }
+
+  .all a {
+    color: var(--dim);
+  }
+
+  @media (max-width: 620px) {
+    .downloads {
+      margin-left: 0;
+      flex-basis: 100%;
+    }
+  }
+</style>

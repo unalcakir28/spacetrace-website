@@ -606,11 +606,36 @@ export const en = {
     ],
   },
 
+  changelog: {
+    title: "Changelog — spacetrace",
+    description:
+      "What changed in each release of the spacetrace desktop app, command line tool and hub.",
+    headline: "What changed",
+    lede:
+      "Every release, newest first. The same text ships inside the apps, so what you read here is what the app tells you after it updates.",
+    pendingTitle: "Landed, not yet released",
+    pendingLede:
+      "Already in the continuous build. It has passed the tests and nothing else.",
+    milestone: "development milestone",
+    milestoneNote:
+      "Versions marked as development milestones were never tagged and have no downloadable files. They are listed because the work happened, not because you can install them.",
+    downloads: "Downloads and checksums",
+    kinds: {
+      added: "Added",
+      changed: "Changed",
+      performance: "Performance",
+      fixed: "Fixed",
+      removed: "Removed",
+      security: "Security",
+    },
+  },
+
   footer: {
     licence:
       "The scanner, snapshot store, command line tool and agent are Apache-2.0. The desktop app and the hub are proprietary.",
     home: "Home",
     allReleases: "All releases",
+    changelog: "Changelog",
     builtWith: "Built with Astro. No trackers, no cookies.",
   },
 } as const;

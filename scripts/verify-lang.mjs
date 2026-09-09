@@ -55,6 +55,7 @@ function run(source, { languages, language, stored = null, throws = false }) {
 
 const home = extract("index.html");
 const download = extract("download/index.html");
+const changelog = extract("changelog/index.html");
 const turkish = extract("tr/index.html");
 const notFound = extract("404.html");
 
@@ -89,6 +90,10 @@ const cases = [
 
   // The route is preserved, not flattened to the home page.
   ["the download page keeps its route", () => run(download, { languages: ["tr-TR"] }).replaced === "/tr/download/"],
+  // A route added to PAGES but not to both page files renders without a
+  // redirector, or with one whose targets are wrong. Neither shows up in a
+  // build log.
+  ["the changelog keeps its route", () => run(changelog, { languages: ["de-DE"] }).replaced === "/de/changelog/"],
 
   // Rule 1: only the unprefixed pages carry the redirector at all.
   ["a translated page has no redirector", () => turkish === null],

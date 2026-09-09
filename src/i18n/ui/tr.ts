@@ -588,11 +588,36 @@ export const tr: Dictionary = {
     ],
   },
 
+  changelog: {
+    title: "Değişiklikler — spacetrace",
+    description:
+      "spacetrace masaüstü uygulaması, komut satırı aracı ve hub'ının her sürümünde ne değişti.",
+    headline: "Ne değişti",
+    lede:
+      "Her sürüm, en yenisi önce. Aynı metin uygulamaların içinde de var: burada okuduğunuz şey, güncellemeden sonra uygulamanın size söyleyeceği şey.",
+    pendingTitle: "Yapıldı, henüz yayınlanmadı",
+    pendingLede:
+      "Sürekli derlemede hâlihazırda var. Testlerden geçti, başka bir şey değil.",
+    milestone: "geliştirme kilometre taşı",
+    milestoneNote:
+      "Geliştirme kilometre taşı olarak işaretlenen sürümler hiç etiketlenmedi ve indirilebilir dosyaları yok. Kurabileceğiniz için değil, o iş yapıldığı için listeleniyorlar.",
+    downloads: "İndirmeler ve sağlama toplamları",
+    kinds: {
+      added: "Eklendi",
+      changed: "Değişti",
+      performance: "Performans",
+      fixed: "Düzeltildi",
+      removed: "Kaldırıldı",
+      security: "Güvenlik",
+    },
+  },
+
   footer: {
     licence:
       "Tarayıcı, anlık görüntü deposu, komut satırı aracı ve ajan Apache-2.0. Masaüstü uygulaması ve hub ticari.",
     home: "Ana sayfa",
     allReleases: "Bütün sürümler",
+    changelog: "Değişiklikler",
     builtWith: "Astro ile yapıldı. İzleyici yok, çerez yok.",
   },
 };

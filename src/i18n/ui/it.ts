@@ -588,11 +588,36 @@ export const it: Dictionary = {
     ],
   },
 
+  changelog: {
+    title: "Changelog — spacetrace",
+    description:
+      "Cosa è cambiato in ogni versione dell'app desktop, dello strumento a riga di comando e dell'hub di spacetrace.",
+    headline: "Cosa è cambiato",
+    lede:
+      "Ogni versione, dalla più recente. Lo stesso testo è incluso nelle app: quello che leggete qui è ciò che l'app vi dirà dopo l'aggiornamento.",
+    pendingTitle: "Fatto, non ancora rilasciato",
+    pendingLede:
+      "Già presente nella build continua. Ha superato i test, e nient'altro.",
+    milestone: "tappa di sviluppo",
+    milestoneNote:
+      "Le versioni segnate come tappe di sviluppo non sono mai state taggate e non hanno file scaricabili. Sono elencate perché il lavoro è stato fatto, non perché possiate installarle.",
+    downloads: "Download e checksum",
+    kinds: {
+      added: "Aggiunto",
+      changed: "Modificato",
+      performance: "Prestazioni",
+      fixed: "Corretto",
+      removed: "Rimosso",
+      security: "Sicurezza",
+    },
+  },
+
   footer: {
     licence:
       "Lo scanner, l'archivio delle istantanee, lo strumento a riga di comando e l'agente sono Apache-2.0. L'app desktop e l'hub sono proprietari.",
     home: "Home",
     allReleases: "Tutte le release",
+    changelog: "Changelog",
     builtWith: "Costruito con Astro. Nessun tracker, nessun cookie.",
   },
 };

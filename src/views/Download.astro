@@ -161,6 +161,11 @@ cargo build --release
     <div class="note warn">
       <span class="note-title">{dict.download.continuousTitle}</span>
       <p>{dict.download.continuousBody}</p>
+      {/* Where the reader is already asking what is in a build, so the
+          answer belongs here rather than only in the footer. */}
+      <p>
+        <a href={localeUrl(locale, "changelog")}>{dict.changelog.headline}</a>
+      </p>
     </div>
   </section>
 

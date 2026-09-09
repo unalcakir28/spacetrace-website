@@ -588,11 +588,36 @@ export const fr: Dictionary = {
     ],
   },
 
+  changelog: {
+    title: "Journal des modifications — spacetrace",
+    description:
+      "Ce qui a changé dans chaque version de l'application de bureau, de l'outil en ligne de commande et du hub spacetrace.",
+    headline: "Ce qui a changé",
+    lede:
+      "Chaque version, de la plus récente à la plus ancienne. Le même texte est embarqué dans les applications : ce que vous lisez ici est ce que l'application vous dira après sa mise à jour.",
+    pendingTitle: "Terminé, pas encore publié",
+    pendingLede:
+      "Déjà dans la version continue. Elle a passé les tests, rien de plus.",
+    milestone: "étape de développement",
+    milestoneNote:
+      "Les versions marquées comme étapes de développement n'ont jamais été étiquetées et n'ont aucun fichier téléchargeable. Elles figurent ici parce que le travail a eu lieu, pas parce que vous pouvez les installer.",
+    downloads: "Téléchargements et sommes de contrôle",
+    kinds: {
+      added: "Ajouté",
+      changed: "Modifié",
+      performance: "Performances",
+      fixed: "Corrigé",
+      removed: "Supprimé",
+      security: "Sécurité",
+    },
+  },
+
   footer: {
     licence:
       "Le scanner, le stockage des instantanés, l'outil en ligne de commande et l'agent sont sous Apache-2.0. L'application de bureau et le hub sont propriétaires.",
     home: "Accueil",
     allReleases: "Toutes les versions",
+    changelog: "Changelog",
     builtWith: "Construit avec Astro. Aucun traceur, aucun cookie.",
   },
 };

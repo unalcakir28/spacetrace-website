@@ -10,7 +10,15 @@ import { LOCALES, DEFAULT_LOCALE, isLocale, type Locale } from "./config";
 const BASE = import.meta.env.BASE_URL.replace(/\/+$/, "");
 
 /** Page identifiers, which double as the URL segment. */
-export const PAGES = ["", "desktop", "cli", "hub", "download", "guide"] as const;
+export const PAGES = [
+  "",
+  "desktop",
+  "cli",
+  "hub",
+  "download",
+  "guide",
+  "changelog",
+] as const;
 export type Page = (typeof PAGES)[number];
 
 /** `/spacetrace/tr/desktop/` — locale prefix omitted for the default. */

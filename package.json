@@ -7,7 +7,8 @@
     "build": "astro build",
     "typecheck": "astro check",
     "preview": "astro preview",
-    "verify": "node scripts/verify-lang.mjs"
+    "verify": "node scripts/verify-lang.mjs",
+    "sync:changelog": "node scripts/sync-changelog.mjs"
   },
   "dependencies": {
     "@astrojs/react": "6.0.5",

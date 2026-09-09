@@ -587,11 +587,36 @@ export const de: Dictionary = {
     ],
   },
 
+  changelog: {
+    title: "Änderungen — spacetrace",
+    description:
+      "Was sich in jeder Version der spacetrace-Desktop-App, des Kommandozeilenwerkzeugs und des Hubs geändert hat.",
+    headline: "Was sich geändert hat",
+    lede:
+      "Jede Version, die neueste zuerst. Derselbe Text steckt in den Apps: Was hier steht, sagt Ihnen die App nach dem Update.",
+    pendingTitle: "Fertig, noch nicht veröffentlicht",
+    pendingLede:
+      "Bereits im fortlaufenden Build. Er hat die Tests bestanden, mehr nicht.",
+    milestone: "Entwicklungsmeilenstein",
+    milestoneNote:
+      "Als Entwicklungsmeilenstein markierte Versionen wurden nie getaggt und haben keine herunterladbaren Dateien. Sie stehen hier, weil die Arbeit stattgefunden hat, nicht weil Sie sie installieren könnten.",
+    downloads: "Downloads und Prüfsummen",
+    kinds: {
+      added: "Hinzugefügt",
+      changed: "Geändert",
+      performance: "Leistung",
+      fixed: "Behoben",
+      removed: "Entfernt",
+      security: "Sicherheit",
+    },
+  },
+
   footer: {
     licence:
       "Scanner, Momentaufnahmen-Speicher, Kommandozeilenwerkzeug und Agent stehen unter Apache-2.0. Desktop-App und Hub sind proprietär.",
     home: "Start",
     allReleases: "Alle Versionen",
+    changelog: "Changelog",
     builtWith: "Mit Astro gebaut. Keine Tracker, keine Cookies.",
   },
 };

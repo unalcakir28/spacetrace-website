@@ -94,3 +94,31 @@ dahil tüm script frontmatter'da string olarak kuruluyor ve `set:html` ile
 veriliyor.
 
 Davranışı değiştirirken `verify-lang.mjs`'deki vakaları birlikte güncelle.
+
+## Changelog sayfası
+
+`/changelog/` beş dilde, kaynağı **bu depo değil**:
+`src/data/changelog.json`, çekirdek depodaki
+`crates/changelog/changelog.json`'ın kopyası. Aynı dosya CLI'ya, masaüstüne ve
+hub'a da derleniyor — yani sayfadaki metin ile uygulamanın "Yenilikler"
+penceresindeki metin ayrışamaz. Metni burada düzeltme, çekirdekte düzelt.
+
+```bash
+yarn sync:changelog    # kopyayı tazeler
+```
+
+**Kopya bayatlayabilir ve bunu engelleyen bir şey yok.** Çekirdekte bir sürüm
+kesildiğinde burayı yeniden derleyecek bir tetik henüz kurulmadı; yeni bir
+sürümden söz eden bir şey yayınlamadan önce elle çalıştır.
+
+`src/data/changelog.ts`'teki `const source: Source = raw` **kontrolün kendisi**:
+`text` alanı `Record<Locale, string>` olduğu için bir girdide Almanca eksikse
+`yarn typecheck` kırılıyor — sözlüklerin İngilizce'ye karşı tiplenmesinin veri
+tarafındaki karşılığı. Bu, silip denenerek doğrulandı, varsayılmadı.
+
+`kind` alanı orada denetlenemiyor (JSON içe aktarımı dize literallerini
+genişletiyor), o yüzden `toKind` derleme sırasında fırlatıyor.
+
+Girdi metinlerindeki `` `backtick` `` parçaları `<code translate="no">` olarak
+render ediliyor: komut ve bayraklar beş dilde de aynı, ve tarayıcının
+`--no-clone-dedupe`'u çevirmeyi önermesi onu bozmayı önermek olurdu.
