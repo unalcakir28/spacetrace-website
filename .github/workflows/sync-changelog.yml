@@ -1,0 +1,68 @@
+name: Sync changelog
+
+# The changelog is written in the core repo and copied here. Nothing over there
+# can push to this repository — `RELEASE_TOKEN` is scoped to the core repo
+# alone — so this pulls instead of being pushed to. No new credential, and
+# nothing to leak.
+#
+# It commits only when the file actually changed, so a quiet week costs one
+# short job every six hours and produces no deploys. The commit is what
+# triggers Pages; this workflow never deploys anything itself.
+
+on:
+  schedule:
+    # Every six hours. A changelog is not a status page — hours of lag is fine,
+    # and `workflow_dispatch` covers the moment right after a release.
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+  # The hook for later: if a token with write access to this repo is ever
+  # created in the core repo, its release workflow can fire this and the site
+  # updates within a minute instead of within six hours.
+  repository_dispatch:
+    types: [changelog-updated]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-changelog
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+
+      - run: yarn install --frozen-lockfile
+
+      # Refuses to write anything malformed, so what lands below is a file the
+      # build can use. See the script for what it checks and why.
+      - run: yarn sync:changelog
+
+      # `yarn typecheck` before committing, not after: this commit deploys, and
+      # a changelog whose shape the site cannot render must not reach the site
+      # just because it arrived over the network.
+      - run: yarn typecheck
+
+      - name: Commit if it moved
+        run: |
+          set -eu
+          if git diff --quiet -- src/data/changelog.json; then
+            echo "Nothing changed." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/changelog.json
+          git commit -m "Changelog'u çekirdek depodan tazele
+
+          Otomatik: kaynak crates/changelog/changelog.json, ve site onun bir
+          kopyasını tutuyor. Elle düzenleme — bir sonraki senkron geri alır."
+          git push
+          echo "changelog.json updated; Pages will redeploy." >> "$GITHUB_STEP_SUMMARY"
