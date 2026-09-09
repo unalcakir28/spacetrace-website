@@ -60,21 +60,21 @@ const notFound = extract("404.html");
 
 const cases = [
   // The reader's own language wins.
-  ["Turkish browser goes to Turkish", () => run(home, { languages: ["tr-TR", "tr"] }).replaced === "/spacetrace/tr/"],
-  ["region-only Italian is matched on the base tag", () => run(home, { languages: ["it-CH"] }).replaced === "/spacetrace/it/"],
-  ["German", () => run(home, { languages: ["de-AT", "de"] }).replaced === "/spacetrace/de/"],
-  ["French", () => run(home, { languages: ["fr"] }).replaced === "/spacetrace/fr/"],
-  ["uppercase tags are normalised", () => run(home, { languages: ["TR-tr"] }).replaced === "/spacetrace/tr/"],
+  ["Turkish browser goes to Turkish", () => run(home, { languages: ["tr-TR", "tr"] }).replaced === "/tr/"],
+  ["region-only Italian is matched on the base tag", () => run(home, { languages: ["it-CH"] }).replaced === "/it/"],
+  ["German", () => run(home, { languages: ["de-AT", "de"] }).replaced === "/de/"],
+  ["French", () => run(home, { languages: ["fr"] }).replaced === "/fr/"],
+  ["uppercase tags are normalised", () => run(home, { languages: ["TR-tr"] }).replaced === "/tr/"],
 
   // A reader of English is left alone (rule 3).
   ["English first wins even with Turkish behind it", () => run(home, { languages: ["en-US", "en", "tr"] }).replaced === null],
   ["English only", () => run(home, { languages: ["en-GB"] }).replaced === null],
-  ["Turkish ahead of English still goes to Turkish", () => run(home, { languages: ["tr", "en-US"] }).replaced === "/spacetrace/tr/"],
+  ["Turkish ahead of English still goes to Turkish", () => run(home, { languages: ["tr", "en-US"] }).replaced === "/tr/"],
 
   // An unsupported language stays on English, which is what x-default says.
   ["Spanish stays on English", () => run(home, { languages: ["es-ES", "es"] }).replaced === null],
   ["empty preference list does nothing", () => run(home, { languages: [""] }).replaced === null],
-  ["a browser with no navigator.languages falls back to navigator.language", () => run(home, { languages: null, language: "tr-TR" }).replaced === "/spacetrace/tr/"],
+  ["a browser with no navigator.languages falls back to navigator.language", () => run(home, { languages: null, language: "tr-TR" }).replaced === "/tr/"],
 
   // An explicit choice wins for good (rule 2).
   ["a stored choice of English is respected", () => run(home, { languages: ["tr-TR"], stored: "en" }).replaced === null],
@@ -88,7 +88,7 @@ const cases = [
   ["no redirect records no flag", () => run(home, { languages: ["en-US"] }).flag === null],
 
   // The route is preserved, not flattened to the home page.
-  ["the download page keeps its route", () => run(download, { languages: ["tr-TR"] }).replaced === "/spacetrace/tr/download/"],
+  ["the download page keeps its route", () => run(download, { languages: ["tr-TR"] }).replaced === "/tr/download/"],
 
   // Rule 1: only the unprefixed pages carry the redirector at all.
   ["a translated page has no redirector", () => turkish === null],

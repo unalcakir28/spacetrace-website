@@ -3,14 +3,14 @@ import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 
-// GitHub Pages project site, so the whole thing lives under /spacetrace.
-// Every internal link goes through localeUrl() in src/i18n/routing.ts rather
-// than being written by hand, because forgetting the base prefix produces
-// links that work in dev and 404 in production — the worst kind of bug to
-// discover after a deploy.
+// Served from its own domain, so the site sits at the root and `base` is "/".
+// It used to be a GitHub Pages *project* site under /spacetrace, where the
+// repository name was the URL path. Every internal link still goes through
+// localeUrl() in src/i18n/routing.ts rather than being written by hand: that
+// indirection is what made this move a one-line change instead of a sweep.
 export default defineConfig({
-  site: "https://unalcakir28.github.io",
-  base: "/spacetrace",
+  site: "https://spacetrace.teknobakkall.com",
+  base: "/",
   trailingSlash: "always",
   integrations: [
     react(),
