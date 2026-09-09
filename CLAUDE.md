@@ -107,9 +107,16 @@ penceresindeki metin ayrışamaz. Metni burada düzeltme, çekirdekte düzelt.
 yarn sync:changelog    # kopyayı tazeler
 ```
 
-**Kopya bayatlayabilir ve bunu engelleyen bir şey yok.** Çekirdekte bir sürüm
-kesildiğinde burayı yeniden derleyecek bir tetik henüz kurulmadı; yeni bir
-sürümden söz eden bir şey yayınlamadan önce elle çalıştır.
+**Tazeleme Pages iş akışının içinde.** Her push'ta ve altı saatte bir
+çalışıyor: indiriyor, doğruluyor, değiştiyse commit'liyor, sonra derleyip
+yayınlıyor. Elle tetiklemek için `gh workflow run pages.yml`.
+
+Ayrı bir "sync" iş akışı olarak denendi ve **çalışmadı**: commit'liyordu ama
+Pages hiç koşmuyordu, çünkü `GITHUB_TOKEN` ile yapılan bir push bilerek başka
+iş akışı tetiklemiyor. Bölmeye kalkma; tek iş akışı, tek dağıtım yolu.
+
+İndirme adımı ölümcül değil — commit'lenmiş kopya geçerli bir sayfa, ve bir ağ
+hatası ya da bozuk bir yukarı akış dosyası sitenin dağıtımını düşürmemeli.
 
 `src/data/changelog.ts`'teki `const source: Source = raw` **kontrolün kendisi**:
 `text` alanı `Record<Locale, string>` olduğu için bir girdide Almanca eksikse

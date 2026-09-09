@@ -8,10 +8,21 @@ name: Pages
 on:
   push:
     branches: [main]
+  # The changelog is written in the core repo and copied here, so this rebuilds
+  # on a timer as well as on a push: a release over there has to reach the site
+  # without anyone touching this repository. Six hours — a changelog is not a
+  # status page, and `workflow_dispatch` covers the minute after a release.
+  schedule:
+    - cron: "17 */6 * * *"
   workflow_dispatch:
 
 permissions:
-  contents: read
+  # `contents: write` so the refreshed changelog can be committed back. The
+  # sync used to be its own workflow that committed and let the push trigger
+  # this one — which never fired: a push made with GITHUB_TOKEN deliberately
+  # does not start another workflow run, so the site stayed on old data while
+  # the commit landed. One workflow, one deploy path, no cross-triggering.
+  contents: write
   pages: write
   id-token: write
 
@@ -36,6 +47,33 @@ jobs:
           cache: yarn
 
       - run: yarn install --frozen-lockfile
+
+      # Refresh the copy of the core repo's changelog. Non-fatal on purpose:
+      # the committed copy is a perfectly good page, so a network failure or a
+      # malformed upstream file must not take the site's deploy down with it.
+      # The script refuses to write anything it cannot validate.
+      - name: Refresh the changelog
+        run: yarn sync:changelog || echo "::warning title=Changelog not refreshed::Kept the committed copy. See the step log."
+
+      - name: Commit it if it moved
+        run: |
+          set -eu
+          if git diff --quiet -- src/data/changelog.json; then
+            echo "Changelog unchanged." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/changelog.json
+          git commit -m "Changelog'u çekirdek depodan tazele
+
+          Otomatik: kaynak crates/changelog/changelog.json, ve site onun bir
+          kopyasını tutuyor. Elle düzenleme — bir sonraki senkron geri alır."
+          # Best effort. The deploy below uses the working tree either way, so
+          # a rejected push (someone pushed while this ran) costs the commit,
+          # not the deploy.
+          git push || echo "::warning title=Changelog commit not pushed::Deployed anyway; the next run will retry."
+          echo "Changelog refreshed." >> "$GITHUB_STEP_SUMMARY"
 
       # `astro check` runs the TypeScript compiler over the .astro files and
       # the React island. The five translation dictionaries are typed against
