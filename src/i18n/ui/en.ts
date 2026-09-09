@@ -442,12 +442,17 @@ export const en = {
 
     installMacTitle: "macOS: “spacetrace can’t be opened”",
     installMacBody:
-      "Open the .dmg, drag the app to Applications, then right-click it and choose Open — that gives the one-time permission a double-click does not offer. Or clear the quarantine flag directly:",
+      "Open the .dmg, drag the app to Applications and double-click it once — macOS will refuse. Then go to System Settings → Privacy & Security, scroll down to Security and press “Open Anyway” within the hour. The old right-click → Open shortcut no longer works; Apple removed it in macOS 15. If the button never appears, clear the quarantine flag instead:",
     installMacFda:
       "Scanning outside your home folder needs Full Disk Access for the app, in System Settings → Privacy & Security.",
     installWinTitle: "Windows: SmartScreen",
     installWinBody:
       "“Windows protected your PC” → More info → Run anyway. The installer is per-user and needs no administrator rights.",
+    installAltTitle: "Alternative: install from the command line (temporary)",
+    installAltBody:
+      "The .dmg and the .exe above are the normal way in and the ones to prefer. This is here only because the app is not signed yet. These commands fetch exactly the same file, check it against the published SHA256SUMS and install it — and because a download made this way carries none of the marks a browser writes, Gatekeeper and SmartScreen have nothing to warn about.",
+    installAltNote:
+      "A signature proves who built the app. A checksum only proves the bytes did not change on the way. So take this route only if you already trust this project — and expect it to go away: once the app is signed, the .dmg will simply open and these scripts get deleted.",
     installLinuxTitle: "Linux",
     installLinuxBody:
       "The AppImage needs no install at all: mark it executable and run it. On Wayland, if the window comes up blank, run it with WEBKIT_DISABLE_DMABUF_RENDERER=1 — a WebKitGTK issue rather than an app one.",

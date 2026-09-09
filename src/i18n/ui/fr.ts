@@ -423,12 +423,17 @@ export const fr: Dictionary = {
 
     installMacTitle: "macOS : « impossible d'ouvrir spacetrace »",
     installMacBody:
-      "Ouvrez le .dmg, glissez l'application dans Applications, puis faites un clic droit et choisissez Ouvrir — c'est cela qui donne l'autorisation unique que le double-clic ne propose pas. Ou retirez directement l'attribut de quarantaine :",
+      "Ouvrez le .dmg, glissez l'application dans Applications et double-cliquez une fois — macOS refusera. Allez ensuite dans Réglages Système → Confidentialité et sécurité, descendez jusqu'à Sécurité et appuyez sur « Ouvrir quand même » dans l'heure qui suit. L'ancien raccourci clic droit → Ouvrir ne fonctionne plus : Apple l'a retiré dans macOS 15. Si le bouton n'apparaît pas, retirez plutôt l'attribut de quarantaine :",
     installMacFda:
       "Analyser en dehors de votre dossier personnel exige le Full Disk Access pour l'application, dans Réglages Système → Confidentialité et sécurité.",
     installWinTitle: "Windows : SmartScreen",
     installWinBody:
       "« Windows a protégé votre ordinateur » → Informations complémentaires → Exécuter quand même. L'installateur est par utilisateur et n'exige aucun droit d'administrateur.",
+    installAltTitle: "Alternative : installation en ligne de commande (temporaire)",
+    installAltBody:
+      "Le .dmg et l'.exe ci-dessus sont la voie normale, et celle à préférer. Cette section n'existe que parce que l'application n'est pas encore signée. Ces commandes téléchargent exactement le même fichier, le vérifient contre le SHA256SUMS publié et l'installent — et comme un téléchargement fait ainsi ne porte aucune des marques qu'écrit un navigateur, Gatekeeper et SmartScreen n'ont rien à signaler.",
+    installAltNote:
+      "Une signature prouve qui a construit l'application. Une somme de contrôle prouve seulement que les octets n'ont pas changé en route. Ne prenez donc ce chemin que si vous faites déjà confiance à ce projet — et attendez-vous à le voir disparaître : une fois l'application signée, le .dmg s'ouvrira simplement et ces scripts seront supprimés.",
     installLinuxTitle: "Linux",
     installLinuxBody:
       "L'AppImage n'a besoin d'aucune installation : rendez-la exécutable et lancez-la. Sous Wayland, si la fenêtre reste blanche, lancez-la avec WEBKIT_DISABLE_DMABUF_RENDERER=1 — c'est un problème de WebKitGTK, pas de l'application.",

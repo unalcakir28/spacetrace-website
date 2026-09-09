@@ -243,6 +243,22 @@ cargo build --release
           <p>{dict.download.installLinuxBody}</p>
         </li>
       </ol>
+
+      <div class="note spaced">
+        <span class="note-title">{dict.download.installAltTitle}</span>
+        <p>{dict.download.installAltBody}</p>
+        <p class="small faint">{dict.download.platMacAny}</p>
+        <Command
+          locale={locale}
+          command="curl -fsSL https://raw.githubusercontent.com/unalcakir28/spacetrace/main/install-desktop.sh | sh"
+        />
+        <p class="small faint">{dict.download.platWin}</p>
+        <Command
+          locale={locale}
+          command="irm https://raw.githubusercontent.com/unalcakir28/spacetrace/main/install-desktop.ps1 | iex"
+        />
+        <p>{dict.download.installAltNote}</p>
+      </div>
     </div>
   </section>
 

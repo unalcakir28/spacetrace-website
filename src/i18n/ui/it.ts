@@ -423,12 +423,17 @@ export const it: Dictionary = {
 
     installMacTitle: "macOS: “impossibile aprire spacetrace”",
     installMacBody:
-      "Apri il .dmg, trascina l'app in Applicazioni, poi fai clic destro e scegli Apri — è quello a dare il permesso una volta sola che il doppio clic non offre. Oppure rimuovi direttamente il flag di quarantena:",
+      "Apri il .dmg, trascina l'app in Applicazioni e fai doppio clic una volta — macOS rifiuterà. Poi vai in Impostazioni di Sistema → Privacy e sicurezza, scorri fino a Sicurezza e premi “Apri comunque” entro un'ora. La vecchia scorciatoia clic destro → Apri non funziona più: Apple l'ha rimossa in macOS 15. Se il pulsante non compare, rimuovi direttamente il flag di quarantena:",
     installMacFda:
       "Scansionare fuori dalla tua cartella home richiede il Full Disk Access per l'app, in Impostazioni di Sistema → Privacy e sicurezza.",
     installWinTitle: "Windows: SmartScreen",
     installWinBody:
       "“Windows ha protetto il PC” → Ulteriori informazioni → Esegui comunque. L'installer è per utente e non richiede diritti di amministratore.",
+    installAltTitle: "Alternativa: installazione da riga di comando (temporanea)",
+    installAltBody:
+      "Il .dmg e l'.exe qui sopra sono la via normale, ed è quella da preferire. Questa sezione esiste solo perché l'app non è ancora firmata. Questi comandi scaricano esattamente lo stesso file, lo verificano con il SHA256SUMS pubblicato e lo installano — e poiché un download fatto così non porta i contrassegni che scrive un browser, Gatekeeper e SmartScreen non hanno nulla di cui avvisarti.",
+    installAltNote:
+      "Una firma dimostra chi ha costruito l'app. Un checksum dimostra solo che i byte non sono cambiati per strada. Quindi prendi questa strada solo se ti fidi già di questo progetto — e aspettati che sparisca: quando l'app sarà firmata, il .dmg si aprirà normalmente e questi script verranno eliminati.",
     installLinuxTitle: "Linux",
     installLinuxBody:
       "L'AppImage non richiede alcuna installazione: rendila eseguibile ed eseguila. Su Wayland, se la finestra resta bianca, esegui con WEBKIT_DISABLE_DMABUF_RENDERER=1 — è un problema di WebKitGTK, non dell'app.",

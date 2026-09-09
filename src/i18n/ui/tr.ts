@@ -423,12 +423,17 @@ export const tr: Dictionary = {
 
     installMacTitle: "macOS: “spacetrace açılamıyor”",
     installMacBody:
-      ".dmg dosyasını aç, uygulamayı Applications'a sürükle, sonra sağ tıklayıp Aç'ı seç — çift tıklamanın vermediği tek seferlik izni bu veriyor. Ya da karantina bayrağını doğrudan temizle:",
+      ".dmg dosyasını aç, uygulamayı Applications'a sürükle ve bir kez çift tıkla — macOS reddedecek. Ardından Sistem Ayarları → Gizlilik ve Güvenlik'e git, aşağıda Güvenlik bölümüne in ve bir saat içinde “Yine de Aç”a bas. Eski sağ tık → Aç kısayolu artık çalışmıyor; Apple onu macOS 15'te kaldırdı. Düğme hiç çıkmazsa karantina bayrağını doğrudan temizle:",
     installMacFda:
       "Ana dizininin dışını taramak için uygulamaya Full Disk Access gerekiyor: Sistem Ayarları → Gizlilik ve Güvenlik.",
     installWinTitle: "Windows: SmartScreen",
     installWinBody:
       "“Windows bilgisayarınızı korudu” → Daha fazla bilgi → Yine de çalıştır. Kurulum kullanıcı düzeyinde ve yönetici hakkı istemiyor.",
+    installAltTitle: "Alternatif: komut satırından kurulum (geçici)",
+    installAltBody:
+      "Yukarıdaki .dmg ve .exe normal yol, ve tercih edilmesi gereken yol. Bu bölüm yalnızca uygulama henüz imzalı olmadığı için burada. Aşağıdaki komutlar tam olarak aynı dosyayı indirir, yayınlanan SHA256SUMS ile doğrular ve kurar — ve bu şekilde inen bir dosya tarayıcının yazdığı işaretleri taşımadığı için Gatekeeper'ın da SmartScreen'in de uyaracak bir şeyi kalmaz.",
+    installAltNote:
+      "İmza, uygulamayı kimin derlediğini kanıtlar. Sağlama toplamı yalnızca baytların yolda değişmediğini kanıtlar. Yani bu yolu ancak bu projeye zaten güveniyorsanız kullanın — ve kalıcı olmadığını bilin: uygulama imzalandığında .dmg zaten öylece açılacak ve bu betikler silinecek.",
     installLinuxTitle: "Linux",
     installLinuxBody:
       "AppImage'in hiç kurulmaya ihtiyacı yok: çalıştırılabilir işaretle ve çalıştır. Wayland'de pencere boş geliyorsa WEBKIT_DISABLE_DMABUF_RENDERER=1 ile çalıştır — bu bir WebKitGTK sorunu, uygulamanın değil.",
