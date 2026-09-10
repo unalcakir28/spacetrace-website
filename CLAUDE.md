@@ -118,6 +118,17 @@ iş akışı tetiklemiyor. Bölmeye kalkma; tek iş akışı, tek dağıtım yol
 İndirme adımı ölümcül değil — commit'lenmiş kopya geçerli bir sayfa, ve bir ağ
 hatası ya da bozuk bir yukarı akış dosyası sitenin dağıtımını düşürmemeli.
 
+**`unreleased` sayfaya hiç basılmıyor.** O girdiler çekirdek deponun `main`'inde
+duran, kimsenin indirmesinde olmayan kodu anlatıyor; okuyucuya alamayacağı bir
+değişikliği duyurmak olurdu. Aynı kural masaüstünün "Yenilikler" panelinde ve
+hub'ın About kartında da geçerli. Veri katmanında duruyorlar, çünkü
+`missingLocales()` çeviri eksiğini sürüm kesilmeden önce yakalasın diye.
+
+`yarn verify:changelog` bunu **derlenmiş HTML'e karşı** doğruluyor ve Pages iş
+akışında koşuyor. İlk hâli ham metni ham HTML ile karşılaştırıyordu ve
+Fransızcanın tamamını kaçırıyordu: apostrof sayfaya `&#39;` olarak iniyor.
+Mutasyonla ölçüldü — bloğu geri koyunca 15 metnin 15'i yakalanıyor.
+
 `src/data/changelog.ts`'teki `const source: Source = raw` **kontrolün kendisi**:
 `text` alanı `Record<Locale, string>` olduğu için bir girdide Almanca eksikse
 `yarn typecheck` kırılıyor — sözlüklerin İngilizce'ye karşı tiplenmesinin veri

@@ -106,27 +106,11 @@ function say(entry: Entry): string {
             <h2>{label[component]}</h2>
           </div>
 
-          {log.unreleased.length > 0 && (
-            <article class="release">
-              <header>
-                <h3>{dict.changelog.pendingTitle}</h3>
-                <p class="faint meta">{dict.changelog.pendingLede}</p>
-              </header>
-              <div class="groups">
-                {byKind(log.unreleased).map((group) => (
-                  <div class="group">
-                    <h4>{dict.changelog.kinds[group.kind]}</h4>
-                    <ul>
-                      {group.entries.map((entry) => (
-                        <li set:html={say(entry)} />
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </article>
-          )}
-
+          {/* `log.unreleased` is deliberately not rendered. Those entries
+              describe code that exists only on main; announcing them here
+              would promise a reader something no download of theirs contains.
+              The data layer still carries them so `missingLocales()` can catch
+              a missing translation before the entry is promoted. */}
           {log.releases.map((release) => (
             <article class="release">
               <header>

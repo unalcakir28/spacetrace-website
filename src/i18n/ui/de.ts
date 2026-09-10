@@ -599,9 +599,6 @@ export const de: Dictionary = {
     headline: "Was sich geändert hat",
     lede:
       "Jede Version, die neueste zuerst. Derselbe Text steckt in den Apps: Was hier steht, sagt Ihnen die App nach dem Update.",
-    pendingTitle: "Fertig, noch nicht veröffentlicht",
-    pendingLede:
-      "Bereits im fortlaufenden Build. Er hat die Tests bestanden, mehr nicht.",
     milestone: "Entwicklungsmeilenstein",
     milestoneNote:
       "Als Entwicklungsmeilenstein markierte Versionen wurden nie getaggt und haben keine herunterladbaren Dateien. Sie stehen hier, weil die Arbeit stattgefunden hat, nicht weil Sie sie installieren könnten.",

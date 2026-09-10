@@ -600,9 +600,6 @@ export const it: Dictionary = {
     headline: "Cosa è cambiato",
     lede:
       "Ogni versione, dalla più recente. Lo stesso testo è incluso nelle app: quello che leggete qui è ciò che l'app vi dirà dopo l'aggiornamento.",
-    pendingTitle: "Fatto, non ancora rilasciato",
-    pendingLede:
-      "Già presente nella build continua. Ha superato i test, e nient'altro.",
     milestone: "tappa di sviluppo",
     milestoneNote:
       "Le versioni segnate come tappe di sviluppo non sono mai state taggate e non hanno file scaricabili. Sono elencate perché il lavoro è stato fatto, non perché possiate installarle.",

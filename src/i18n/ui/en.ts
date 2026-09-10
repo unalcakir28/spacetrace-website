@@ -618,9 +618,6 @@ export const en = {
     headline: "What changed",
     lede:
       "Every release, newest first. The same text ships inside the apps, so what you read here is what the app tells you after it updates.",
-    pendingTitle: "Landed, not yet released",
-    pendingLede:
-      "Already in the continuous build. It has passed the tests and nothing else.",
     milestone: "development milestone",
     milestoneNote:
       "Versions marked as development milestones were never tagged and have no downloadable files. They are listed because the work happened, not because you can install them.",

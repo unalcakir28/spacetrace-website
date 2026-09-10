@@ -155,13 +155,10 @@ export function timeline(): {
   });
 }
 
-/** What has landed but is not in any release yet, per component. */
-export function pending(): { component: Component; entries: Entry[] }[] {
-  return COMPONENTS.map((component) => ({
-    component,
-    entries: changelog.components[component].unreleased,
-  })).filter((group) => group.entries.length > 0);
-}
+/* There is deliberately no exported helper for `unreleased`. It is kept on the
+   data so `missingLocales()` below can validate translations early, and read
+   by nothing else: a page that renders it tells a reader about code no
+   download of theirs contains. */
 
 /** Guards against a locale being added to the site but not to the changelog. */
 export function missingLocales(): string[] {

@@ -91,6 +91,13 @@ jobs:
       # executing the built script catches it.
       - run: yarn verify
 
+      # The changelog page must never carry `unreleased` entries: they describe
+      # code on the core repo's main that is in nobody's download. Checked
+      # against the built HTML in all five languages, because the first version
+      # of this check compared raw text and so was blind to French and Turkish,
+      # where an apostrophe reaches the page as `&#39;`.
+      - run: yarn verify:changelog
+
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3

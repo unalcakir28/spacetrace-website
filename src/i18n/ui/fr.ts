@@ -600,9 +600,6 @@ export const fr: Dictionary = {
     headline: "Ce qui a changé",
     lede:
       "Chaque version, de la plus récente à la plus ancienne. Le même texte est embarqué dans les applications : ce que vous lisez ici est ce que l'application vous dira après sa mise à jour.",
-    pendingTitle: "Terminé, pas encore publié",
-    pendingLede:
-      "Déjà dans la version continue. Elle a passé les tests, rien de plus.",
     milestone: "étape de développement",
     milestoneNote:
       "Les versions marquées comme étapes de développement n'ont jamais été étiquetées et n'ont aucun fichier téléchargeable. Elles figurent ici parce que le travail a eu lieu, pas parce que vous pouvez les installer.",

@@ -600,9 +600,6 @@ export const tr: Dictionary = {
     headline: "Ne değişti",
     lede:
       "Her sürüm, en yenisi önce. Aynı metin uygulamaların içinde de var: burada okuduğunuz şey, güncellemeden sonra uygulamanın size söyleyeceği şey.",
-    pendingTitle: "Yapıldı, henüz yayınlanmadı",
-    pendingLede:
-      "Sürekli derlemede hâlihazırda var. Testlerden geçti, başka bir şey değil.",
     milestone: "geliştirme kilometre taşı",
     milestoneNote:
       "Geliştirme kilometre taşı olarak işaretlenen sürümler hiç etiketlenmedi ve indirilebilir dosyaları yok. Kurabileceğiniz için değil, o iş yapıldığı için listeleniyorlar.",

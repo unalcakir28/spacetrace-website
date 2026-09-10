@@ -8,6 +8,7 @@
     "typecheck": "astro check",
     "preview": "astro preview",
     "verify": "node scripts/verify-lang.mjs",
+    "verify:changelog": "node scripts/verify-changelog.mjs",
     "sync:changelog": "node scripts/sync-changelog.mjs"
   },
   "dependencies": {
