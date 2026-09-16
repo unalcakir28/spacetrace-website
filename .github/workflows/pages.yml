@@ -65,10 +65,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add src/data/changelog.json
-          git commit -m "Changelog'u çekirdek depodan tazele
+          git commit -m "Refresh the changelog from the core repo
 
-          Otomatik: kaynak crates/changelog/changelog.json, ve site onun bir
-          kopyasını tutuyor. Elle düzenleme — bir sonraki senkron geri alır."
+          Automated: the source is crates/changelog/changelog.json and the site
+          keeps a copy of it. Do not hand edit — the next sync reverts it."
           # Best effort. The deploy below uses the working tree either way, so
           # a rejected push (someone pushed while this ran) costs the commit,
           # not the deploy.

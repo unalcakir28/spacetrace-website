@@ -1,188 +1,233 @@
-# spacetrace sitesi — Claude Code notları
+# spacetrace site — Claude Code notes
 
-Bu depo yalnızca tanıtım sitesi. Ürünün kendisi, sürüm hattı ve indirme
-sözleşmesi [core depoda](https://github.com/unalcakir28/spacetrace):
-`docs/RELEASING.md` kanalları ve varlık adlarını anlatıyor.
+This repo is only the marketing site. The product itself, the release
+pipeline and the download contract live in the
+[core repo](https://github.com/unalcakir28/spacetrace):
+`docs/RELEASING.md` describes the channels and the asset names.
 
-**İndirme sözleşmesi burada değil, orada tanımlı.** `src/data/releases.ts`
-içindeki etiket ve dosya adları, core deposundaki üç sürüm iş akışının ürettiği
-dizelerle birebir aynı olmak zorunda; birini yeniden adlandırmak her indirme
-bağlantısını sessizce kırar.
+**The download contract is defined there, not here.** The tag and file
+names in `src/data/releases.ts` must be exactly identical to the strings
+produced by the three release workflows in the core repo; renaming one
+silently breaks every download link.
 
-## Komutlar
+## Commands
 
 ```bash
-yarn install --frozen-lockfile   # CI böyle kuruyor
+yarn install --frozen-lockfile   # how CI installs
 yarn dev                         # astro dev
-yarn typecheck                   # astro check — build'den ÖNCE koşar
+yarn typecheck                   # astro check — runs BEFORE build
 yarn build                       # astro build → dist/
-yarn preview                     # derlenmiş dist/'i sun
-yarn verify                      # dil yönlendiricisini dist/'ten çıkarıp koşturur
-yarn verify:changelog            # changelog metinlerini derlenmiş HTML'e karşı
-yarn sync:changelog              # changelog.json kopyasını çekirdekten tazeler
+yarn preview                     # serve the built dist/
+yarn verify                      # extracts the redirector from dist/, runs it
+yarn verify:changelog            # changelog texts against the built HTML
+yarn sync:changelog              # refreshes the changelog.json copy from core
 ```
 
-**Node 22.** Hiçbir yerde sabitlenmiş değil — `.nvmrc`, `engines` ve
-`packageManager` alanı yok, tek kaynak `pages.yml` içindeki `node-version: 22`.
-Yerelde başka bir sürümle çalışmak CI ile sessizce ayrışır.
+**Node 22.** Pinned nowhere — there is no `.nvmrc`, no `engines` and no
+`packageManager` field; the single source is `node-version: 22` in
+`pages.yml`. Running a different version locally silently diverges from CI.
 
-**Test koşucusu ve linter yok.** vitest/jest/playwright yapılandırması,
-ESLint ve Prettier yok; `scripts/verify-lang.mjs` ile
-`scripts/verify-changelog.mjs` fiilen bütün test takımı, `astro check` de
-bütün lint. Yeni bir doğrulama yazarken üçüncü bir `.mjs` script ekle,
-bir test çerçevesi kurma — ikisi de derlenmiş `dist/`'e karşı çalışıyor ve
-aşağıda anlatılan hata sınıfını ancak öyle yakalıyor.
+**No test runner and no linter.** There is no vitest/jest/playwright
+configuration, no ESLint and no Prettier; `scripts/verify-lang.mjs` and
+`scripts/verify-changelog.mjs` are effectively the entire test suite, and
+`astro check` is the entire lint. When you write a new verification, add a
+third `.mjs` script, do not set up a test framework — both of them run
+against the built `dist/` and that is the only way they catch the class of
+bug described below.
 
-## Ne olduğu
+## What this is
 
-Bu depo **Astro 7** projesi. Beş dil (en, tr, it, fr, de) ve **36 statik sayfa**
-üretiyor (`src/pages/` altında 7 rota × 5 dil + `404`); `pages.yml` derleyip
-GitHub Pages'e yüklüyor, Pages de `spacetrace.teknobakkall.com` alan adından
-sunuyor.
+This repo is an **Astro 7** project. It produces five languages (en, tr,
+it, fr, de) and **36 static pages** (7 routes × 5 languages under
+`src/pages/` + `404`); `pages.yml` builds it and uploads it to GitHub
+Pages, and Pages serves it from the `spacetrace.teknobakkall.com` domain.
 
-Katmanlar: `src/pages/[lang]/*.astro` ince sarmalayıcı — yalnızca
-`getStaticPaths` kurup view'ı çağırıyorlar. Gerçek içerik `src/views/` altındaki
-yedi dosyada, tek layout `src/layouts/Base.astro`. **Tailwind yok**: elle
-yazılmış tek global stylesheet `src/styles/global.css` (16 KB, tipografi ve düzen
-sistemi `6c2449a`'da baştan tasarlandı) ve React adasına ait
-`src/components/demo/treemap.css`. Content collection yok — veri düz TS/JSON
-(`src/data/`). `trailingSlash: "always"`.
+Layers: `src/pages/[lang]/*.astro` are thin wrappers — they only set up
+`getStaticPaths` and call the view. The real content is in the seven files
+under `src/views/`, and the single layout is `src/layouts/Base.astro`.
+**No Tailwind**: a single hand-written global stylesheet
+`src/styles/global.css` (16 KB, its typography and layout system redesigned
+from scratch in `6c2449a`) and `src/components/demo/treemap.css`, which
+belongs to the React island. No content collections — the data is plain
+TS/JSON (`src/data/`). `trailingSlash: "always"`.
 
-Kolay bozulan yerler:
+What breaks easily:
 
-- **Sözlükler İngilizceye karşı tipli.** `src/i18n/ui/en.ts` kaynak; diğer dört
-  dil `Dictionary` tipiyle ona uyuyor. Bir dile eklenip diğerlerinde unutulan
-  anahtar `yarn typecheck` ile derleme hatası veriyor, canlı sayfada boşluk
-  olarak değil. İş akışı bu yüzden `build`'den önce `typecheck` çalıştırıyor.
-- **`yarn check` yazma.** yarn 1.x'in kendi yerleşik komutu ve script'i
-  gölgeliyor — sessizce "Folder in sync" der ve tip denetimi hiç çalışmaz.
-  Script'in adı bu yüzden `typecheck`.
-- **İndirme sözleşmesi tek yerde:** `src/data/releases.ts`. Etiket adları ve
-  varlık adları yukarıdaki tablodakilerle aynı olmak zorunda; oradaki bir
-  yeniden adlandırma her indirme bağlantısını kırar.
-- **JS kapalıyken de çalışan bir indirme sayfası bırakmak şart.** Bağlantılar
-  işaretlemede gerçek dosyalara işaret ediyor (`continuous` etiketleri hiç
-  kımıldamıyor); `src/scripts/releases.ts` yalnızca üzerine bilgi ekliyor —
-  sürüm, tarih, boyut, ve kararlı sürüm çıktığında bağlantıların ona
-  yükseltilmesi. Her adım korumalı, hata sessizce yutuluyor.
-- **Etkileşimli treemap tek React adası** (`src/components/demo/`). Sunucuda da
-  makul bir geometriyle çiziliyor, yani JS olmadan da dolu görünüyor.
-- **`base: "/"`** — her iç bağlantı `localeUrl()` üzerinden geçiyor. Elle yazılan
-  bir yol `astro dev`'de çalışır, üretimde 404 verir. Bu dolaylılık sayesinde
-  site core deposundan kendi alan adına tek satırlık değişiklikle taşındı.
-- **`public/CNAME` alan adını taşıyor.** Silinirse Pages varsayılan adrese döner
-  ve sertifika düşer.
+- **The dictionaries are typed against English.** `src/i18n/ui/en.ts` is
+  the source; the other four languages conform to it through the
+  `Dictionary` type. A key added to one language and forgotten in the
+  others is a compile error from `yarn typecheck`, not a blank on the live
+  page. That is why the workflow runs `typecheck` before `build`.
+- **Do not type `yarn check`.** It is yarn 1.x's own builtin command and it
+  shadows the script — it silently says "Folder in sync" and the type check
+  never runs. That is why the script is named `typecheck`.
+- **The download contract is in one place:** `src/data/releases.ts`. The
+  tag names and the asset names must be the same as the ones in the table
+  above; a rename there breaks every download link.
+- **Leaving a download page that works with JS turned off is mandatory.**
+  The links point at real files in the markup (`continuous` tags never
+  move); `src/scripts/releases.ts` only layers information on top — the
+  version, the date, the size, and upgrading the links to the stable
+  release once one is out. Every step is guarded, errors are swallowed
+  silently.
+- **The interactive treemap is the only React island**
+  (`src/components/demo/`). It is drawn with reasonable geometry on the
+  server too, so it looks filled in without JS.
+- **`base: "/"`** — every internal link goes through `localeUrl()`. A
+  hand-written path works in `astro dev` and 404s in production. It is this
+  indirection that let the site move from the core repo to its own domain
+  with a one-line change.
+- **`public/CNAME` carries the domain.** If it is deleted, Pages falls back
+  to the default address and the certificate drops.
 
-`@astrojs/sitemap` `i18n` yapılandırmasıyla açık, çıktı
-`dist/sitemap-index.xml` (35 URL, 404 hariç). **`robots.txt` depoda yok** —
-eklenmesi SEO işlerinin içinde, eksikliği bilinçli bir karar değil.
+`@astrojs/sitemap` is enabled with the `i18n` configuration, the output is
+`dist/sitemap-index.xml` (35 URLs, 404 excluded). **`robots.txt` is not in
+the repo** — adding it is part of the SEO work; its absence is not a
+deliberate decision.
 
-SEO ve AI keşfedilebilirliği tarafında kalan işler core deposunun TODO.md'sinde,
-"Yayın sonrası — SEO ve AISEO" bölümünde; ölçümler orada.
+The remaining work on SEO and AI discoverability is in the core repo's
+TODO.md, in the "Post-launch — SEO and AISEO" section; the measurements are
+there.
 
-`.agents/skills/web-design-guidelines/` depoda duruyor (`23cb294`);
-`vercel-labs/agent-skills`'ten vendor edilmiş, çekirdek depodaki kopyası
-`skills-lock.json` ile kilitli.
+## Claude tooling kept in the repo
 
-### Otomatik dil
+| Tool | When |
+|------|----------|
+| `preflight` (skill) | Before a push; a push goes straight to production |
+| `web-design-guidelines` (skill) | UI review; vendored from `vercel-labs/agent-skills` (`23cb294`) |
 
-Pages statik, yani `Accept-Language` okuyacak bir sunucu yok — algılama
-`src/components/LangRedirect.astro` içindeki satır içi script'te, `<head>`'in en
-başında (stylesheet ve fontlardan önce, terk edilecek sayfa için boşuna istek
-atılmasın diye).
+`preflight` **triggers on its own** — because a push goes straight to
+production, it is most valuable right before a push.
 
-Dört kural var ve her biri bunun kullanıcıya karşı çalışmasını engellemek için:
+**Until 16 September 2026 the vendored skill sat under `.agents/skills/`
+and was never loaded** — Claude Code reads `.claude/skills/`. A symlink
+dangling at the same skill had been left in the core repo too; that was
+deleted as well. There is now a single real copy, here.
 
-1. **Yalnızca öneksiz (İngilizce) sayfalarda çalışıyor.** `/tr/hub/` gibi dili
-   adıyla söyleyen bir adres birinin bilinçli seçimi ya da paylaştığı bağlantı;
-   oradan taşımak yanlış olurdu.
-2. **Açık seçim kalıcı kazanıyor.** Değiştiriciden dil seçmek, bildirim
-   çubuğundan "English"e dönmek ya da çubuğu kapatmak `localStorage`'a
-   `spacetrace.lang` yazıyor; ondan sonra bu script hiç çalışmıyor.
-3. **Tarayıcının tercih listesinde İngilizce, diğer dört dilden önce geçiyorsa
-   hiçbir şey olmuyor.** Sıra okunuyor: `["en-GB","tr"]` İngilizce'de kalıyor,
-   `["tr-TR","en-US"]` Türkçe'ye gidiyor. Desteklenmeyen bir dil de İngilizce'de
-   bırakıyor (`hreflang` içindeki `x-default` bu).
-4. **Her hata sayfayı yerinde bırakıyor** — gizli sekmede `localStorage`
-   istisna atabilir, `navigator.languages` olmayabilir.
+The shared tools come from the `spacetrace-tools` plugin, with the
+`spacetrace-tools:` prefix. The one that concerns this repo:
+**`download-contract`** — it compares the tag and asset names in
+`src/data/releases.ts` against the ones the core's release workflows
+produce. **This repo is the other end of the contract** and no CI sees both
+of them, so this is the only check. Also `doc-drift-auditor`,
+`workspace-audit` and `code-reviewer`.
 
-Yönlendirmeden sonra hedef sayfada bir kez bildirim çubuğu görünüyor
-(`LangNotice.astro`): o dilde bir cümle ve çıkış yolu olarak **English**.
-Haber verilmeden taşınmak, dil algılamanın insanların sevmediği kısmı; çıkış tek
-tık ve okuyabildikleri bir kelime olmak zorunda. Çubuk `sessionStorage`
-bayrağıyla tek seferlik — okunduğu anda siliniyor.
+I do not keep the full list here, it is in the plugin's README; so is the
+installation. The plugin is a private repo — since this repo is public, I
+trust the name rather than a link.
 
-`404` sayfasında algılama kapalı (`detectLanguage={false}`): yolu çevrilmiş
-rotalardan biri değil.
+### Automatic language detection
 
-#### Doğrulama zorunlu, ve derlenmiş çıktıya karşı
+Pages is static, so there is no server to read `Accept-Language` — the
+detection lives in the inline script inside
+`src/components/LangRedirect.astro`, at the very top of `<head>` (before
+the stylesheet and the fonts, so that no request is wasted on a page that
+is about to be abandoned).
 
-`yarn verify` (`scripts/verify-lang.mjs`) yönlendiriciyi **`dist/`'ten
-çıkarıp sahte bir tarayıcıda çalıştırıyor** ve 21 vakada okuyucunun nereye
-gittiğini ölçüyor. Pages iş akışında `yarn build`'den sonra çalışıyor.
+There are four rules, and each one exists to keep this from working
+against the user:
 
-**Yerel `dist/` bayat olabilir.** `verify` ve `verify:changelog` derlenmiş
-çıktıya bakıyor, kaynağa değil — `yarn build` koşmadan yeşil bir sonuç eski
-siteyi doğruluyor demektir.
+1. **It only runs on unprefixed (English) pages.** An address that names
+   the language, like `/tr/hub/`, is somebody's deliberate choice or a
+   link they shared; moving them off it would be wrong.
+2. **An explicit choice wins permanently.** Picking a language from the
+   switcher, going back to "English" from the notice bar, or dismissing
+   the bar writes `spacetrace.lang` into `localStorage`; after that this
+   script never runs.
+3. **If English comes before the other four languages in the browser's
+   preference list, nothing happens.** The order is read: `["en-GB","tr"]`
+   stays on English, `["tr-TR","en-US"]` goes to Turkish. An unsupported
+   language also leaves the reader on English (this is the `x-default` in
+   `hreflang`).
+4. **Every error leaves the page where it is** — `localStorage` can throw
+   in a private tab, `navigator.languages` may not exist.
 
-Bu adım bir sebeple var: özellik bir kez **etkisiz halde canlıya çıktı**.
-Astro'da satır içi script gövdesini JSX çocuğu olarak `` {`…`} `` ile sarmak,
-sarmalayıcıyı olduğu gibi HTML'e basıyor; ortaya çıkan kod bir blok içinde
-değerlendirilip atılan bir string oluyor. Sonuç: derleme yeşil, script sayfada,
-içinde `window.location.replace` **geçiyor**, ve hiçbir şey yapmıyor. Yani
-"script var mı" ya da "içinde şu ifade var mı" diye bakan bir test bunu
-onaylardı — tek dişli kontrol script'i çalıştırmak.
+After a redirect, a notice bar appears once on the target page
+(`LangNotice.astro`): one sentence in that language and **English** as the
+way out. Being moved without being told is the part of language detection
+people dislike; the way out has to be one click and a word they can read.
+The bar is one-shot through a `sessionStorage` flag — it is deleted the
+moment it is read.
 
-İkinci tuzak: `define:vars` ile `set:html` birlikte kullanılamıyor, `define:vars`
-kazanıyor ve gövde tamamen kayboluyor. Bu yüzden tek mekanizma var — değerler
-dahil tüm script frontmatter'da string olarak kuruluyor ve `set:html` ile
-veriliyor.
+Detection is off on the `404` page (`detectLanguage={false}`): its path is
+not one of the translated routes.
 
-Davranışı değiştirirken `verify-lang.mjs`'deki vakaları birlikte güncelle.
+#### Verification is mandatory, and against the built output
 
-## Changelog sayfası
+`yarn verify` (`scripts/verify-lang.mjs`) **extracts the redirector from
+`dist/` and runs it in a fake browser**, measuring where the reader ends up
+in 21 cases. It runs after `yarn build` in the Pages workflow.
 
-`/changelog/` beş dilde, kaynağı **bu depo değil**:
-`src/data/changelog.json`, çekirdek depodaki
-`crates/changelog/changelog.json`'ın kopyası. Aynı dosya CLI'ya, masaüstüne ve
-hub'a da derleniyor — yani sayfadaki metin ile uygulamanın "Yenilikler"
-penceresindeki metin ayrışamaz. Metni burada düzeltme, çekirdekte düzelt.
+**A local `dist/` can be stale.** `verify` and `verify:changelog` look at
+the built output, not at the source — a green result without running
+`yarn build` means you verified the old site.
+
+This step exists for a reason: the feature once **shipped to production
+inert**. In Astro, wrapping an inline script body as a JSX child with
+`` {`…`} `` prints the wrapper into the HTML as-is; the code that comes out
+is a string that is evaluated inside a block and discarded. The result: the
+build is green, the script is on the page, `window.location.replace`
+**appears** inside it, and it does nothing. So a test that looks at "is
+there a script" or "does it contain this expression" would have approved
+it — the only check with teeth is running the script.
+
+The second trap: `define:vars` and `set:html` cannot be used together,
+`define:vars` wins and the body disappears entirely. That is why there is
+only one mechanism — the whole script, values included, is assembled as a
+string in the frontmatter and handed over with `set:html`.
+
+When you change the behaviour, update the cases in `verify-lang.mjs` along
+with it.
+
+## Changelog page
+
+`/changelog/` is in five languages, and its source is **not this repo**:
+`src/data/changelog.json` is a copy of `crates/changelog/changelog.json`
+in the core repo. The same file is compiled into the CLI, the desktop app
+and the hub — so the text on the page and the text in the app's "What's
+new" window cannot diverge. Do not fix the text here, fix it in core.
 
 ```bash
-yarn sync:changelog    # kopyayı tazeler
+yarn sync:changelog    # refreshes the copy
 ```
 
-**Tazeleme Pages iş akışının içinde.** Her push'ta ve altı saatte bir
-çalışıyor: indiriyor, doğruluyor, değiştiyse commit'liyor, sonra derleyip
-yayınlıyor. Elle tetiklemek için `gh workflow run pages.yml`.
+**The refresh is inside the Pages workflow.** It runs on every push and
+every six hours: it downloads, verifies, commits if anything changed, then
+builds and publishes. To trigger it by hand: `gh workflow run pages.yml`.
 
-Ayrı bir "sync" iş akışı olarak denendi ve **çalışmadı**: commit'liyordu ama
-Pages hiç koşmuyordu, çünkü `GITHUB_TOKEN` ile yapılan bir push bilerek başka
-iş akışı tetiklemiyor. Bölmeye kalkma; tek iş akışı, tek dağıtım yolu.
+It was tried as a separate "sync" workflow and it **did not work**: it
+committed, but Pages never ran, because a push made with `GITHUB_TOKEN`
+deliberately does not trigger other workflows. Do not try to split it; one
+workflow, one deployment path.
 
-İndirme adımı ölümcül değil — commit'lenmiş kopya geçerli bir sayfa, ve bir ağ
-hatası ya da bozuk bir yukarı akış dosyası sitenin dağıtımını düşürmemeli.
+The download step is not fatal — the committed copy is a valid page, and a
+network error or a corrupt upstream file must not take the site's
+deployment down.
 
-**`unreleased` sayfaya hiç basılmıyor.** O girdiler çekirdek deponun `main`'inde
-duran, kimsenin indirmesinde olmayan kodu anlatıyor; okuyucuya alamayacağı bir
-değişikliği duyurmak olurdu. Aynı kural masaüstünün "Yenilikler" panelinde ve
-hub'ın About kartında da geçerli. Veri katmanında duruyorlar, çünkü
-`missingLocales()` çeviri eksiğini sürüm kesilmeden önce yakalasın diye.
+**`unreleased` is never rendered onto the page.** Those entries describe
+code that sits on the core repo's `main` and is in nobody's download;
+announcing a change the reader cannot get would be wrong. The same rule
+holds in the desktop app's "What's new" panel and in the hub's About card.
+They stay in the data layer so that `missingLocales()` catches a missing
+translation before a release is cut.
 
-`yarn verify:changelog` bunu **derlenmiş HTML'e karşı** doğruluyor ve Pages iş
-akışında koşuyor. İlk hâli ham metni ham HTML ile karşılaştırıyordu ve
-Fransızcanın tamamını kaçırıyordu: apostrof sayfaya `&#39;` olarak iniyor.
-Mutasyonla ölçüldü — bloğu geri koyunca o günkü 15 metnin 15'i yakalandı
-(bugün 20 locale metni var; ölçüm tekrarlanmadı).
+`yarn verify:changelog` verifies this **against the built HTML** and runs
+in the Pages workflow. Its first version compared raw text against raw HTML
+and missed all of French: the apostrophe lands on the page as `&#39;`. It
+was measured by mutation — putting the block back caught 15 of the 15 texts
+there were that day (there are 20 locale strings today; the measurement was
+not repeated).
 
-`src/data/changelog.ts`'teki `const source: Source = raw` **kontrolün kendisi**:
-`text` alanı `Record<Locale, string>` olduğu için bir girdide Almanca eksikse
-`yarn typecheck` kırılıyor — sözlüklerin İngilizce'ye karşı tiplenmesinin veri
-tarafındaki karşılığı. Bu, silip denenerek doğrulandı, varsayılmadı.
+The `const source: Source = raw` in `src/data/changelog.ts` **is the check
+itself**: because the `text` field is `Record<Locale, string>`, if German
+is missing from an entry `yarn typecheck` breaks — the data-side
+counterpart of typing the dictionaries against English. This was verified
+by deleting and trying, not assumed.
 
-`kind` alanı orada denetlenemiyor (JSON içe aktarımı dize literallerini
-genişletiyor), o yüzden `toKind` derleme sırasında fırlatıyor.
+The `kind` field cannot be checked there (a JSON import widens string
+literals), so `toKind` throws at build time.
 
-Girdi metinlerindeki `` `backtick` `` parçaları `<code translate="no">` olarak
-render ediliyor: komut ve bayraklar beş dilde de aynı, ve tarayıcının
-`--no-clone-dedupe`'u çevirmeyi önermesi onu bozmayı önermek olurdu.
+The `` `backtick` `` pieces inside entry texts are rendered as
+`<code translate="no">`: commands and flags are the same in all five
+languages, and the browser offering to translate `--no-clone-dedupe` would
+be offering to break it.
