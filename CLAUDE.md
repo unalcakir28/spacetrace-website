@@ -9,11 +9,44 @@ içindeki etiket ve dosya adları, core deposundaki üç sürüm iş akışını
 dizelerle birebir aynı olmak zorunda; birini yeniden adlandırmak her indirme
 bağlantısını sessizce kırar.
 
+## Komutlar
+
+```bash
+yarn install --frozen-lockfile   # CI böyle kuruyor
+yarn dev                         # astro dev
+yarn typecheck                   # astro check — build'den ÖNCE koşar
+yarn build                       # astro build → dist/
+yarn preview                     # derlenmiş dist/'i sun
+yarn verify                      # dil yönlendiricisini dist/'ten çıkarıp koşturur
+yarn verify:changelog            # changelog metinlerini derlenmiş HTML'e karşı
+yarn sync:changelog              # changelog.json kopyasını çekirdekten tazeler
+```
+
+**Node 22.** Hiçbir yerde sabitlenmiş değil — `.nvmrc`, `engines` ve
+`packageManager` alanı yok, tek kaynak `pages.yml` içindeki `node-version: 22`.
+Yerelde başka bir sürümle çalışmak CI ile sessizce ayrışır.
+
+**Test koşucusu ve linter yok.** vitest/jest/playwright yapılandırması,
+ESLint ve Prettier yok; `scripts/verify-lang.mjs` ile
+`scripts/verify-changelog.mjs` fiilen bütün test takımı, `astro check` de
+bütün lint. Yeni bir doğrulama yazarken üçüncü bir `.mjs` script ekle,
+bir test çerçevesi kurma — ikisi de derlenmiş `dist/`'e karşı çalışıyor ve
+aşağıda anlatılan hata sınıfını ancak öyle yakalıyor.
+
 ## Ne olduğu
 
-Bu depo **Astro** projesi. Beş dil (en, tr, it, fr, de) ve 31 statik sayfa
-üretiyor; `pages.yml` derleyip GitHub Pages'e yüklüyor, Pages de
-`spacetrace.teknobakkall.com` alan adından sunuyor.
+Bu depo **Astro 7** projesi. Beş dil (en, tr, it, fr, de) ve **36 statik sayfa**
+üretiyor (`src/pages/` altında 7 rota × 5 dil + `404`); `pages.yml` derleyip
+GitHub Pages'e yüklüyor, Pages de `spacetrace.teknobakkall.com` alan adından
+sunuyor.
+
+Katmanlar: `src/pages/[lang]/*.astro` ince sarmalayıcı — yalnızca
+`getStaticPaths` kurup view'ı çağırıyorlar. Gerçek içerik `src/views/` altındaki
+yedi dosyada, tek layout `src/layouts/Base.astro`. **Tailwind yok**: elle
+yazılmış tek global stylesheet `src/styles/global.css` (16 KB, tipografi ve düzen
+sistemi `6c2449a`'da baştan tasarlandı) ve React adasına ait
+`src/components/demo/treemap.css`. Content collection yok — veri düz TS/JSON
+(`src/data/`). `trailingSlash: "always"`.
 
 Kolay bozulan yerler:
 
@@ -40,8 +73,16 @@ Kolay bozulan yerler:
 - **`public/CNAME` alan adını taşıyor.** Silinirse Pages varsayılan adrese döner
   ve sertifika düşer.
 
+`@astrojs/sitemap` `i18n` yapılandırmasıyla açık, çıktı
+`dist/sitemap-index.xml` (35 URL, 404 hariç). **`robots.txt` depoda yok** —
+eklenmesi SEO işlerinin içinde, eksikliği bilinçli bir karar değil.
+
 SEO ve AI keşfedilebilirliği tarafında kalan işler core deposunun TODO.md'sinde,
 "Yayın sonrası — SEO ve AISEO" bölümünde; ölçümler orada.
+
+`.agents/skills/web-design-guidelines/` depoda duruyor (`23cb294`);
+`vercel-labs/agent-skills`'ten vendor edilmiş, çekirdek depodaki kopyası
+`skills-lock.json` ile kilitli.
 
 ### Otomatik dil
 
@@ -76,9 +117,13 @@ rotalardan biri değil.
 
 #### Doğrulama zorunlu, ve derlenmiş çıktıya karşı
 
-`yarn verify` (`website/scripts/verify-lang.mjs`) yönlendiriciyi **`dist/`'ten
-çıkarıp sahte bir tarayıcıda çalıştırıyor** ve 20 vakada okuyucunun nereye
+`yarn verify` (`scripts/verify-lang.mjs`) yönlendiriciyi **`dist/`'ten
+çıkarıp sahte bir tarayıcıda çalıştırıyor** ve 21 vakada okuyucunun nereye
 gittiğini ölçüyor. Pages iş akışında `yarn build`'den sonra çalışıyor.
+
+**Yerel `dist/` bayat olabilir.** `verify` ve `verify:changelog` derlenmiş
+çıktıya bakıyor, kaynağa değil — `yarn build` koşmadan yeşil bir sonuç eski
+siteyi doğruluyor demektir.
 
 Bu adım bir sebeple var: özellik bir kez **etkisiz halde canlıya çıktı**.
 Astro'da satır içi script gövdesini JSX çocuğu olarak `` {`…`} `` ile sarmak,
@@ -127,7 +172,8 @@ hub'ın About kartında da geçerli. Veri katmanında duruyorlar, çünkü
 `yarn verify:changelog` bunu **derlenmiş HTML'e karşı** doğruluyor ve Pages iş
 akışında koşuyor. İlk hâli ham metni ham HTML ile karşılaştırıyordu ve
 Fransızcanın tamamını kaçırıyordu: apostrof sayfaya `&#39;` olarak iniyor.
-Mutasyonla ölçüldü — bloğu geri koyunca 15 metnin 15'i yakalanıyor.
+Mutasyonla ölçüldü — bloğu geri koyunca o günkü 15 metnin 15'i yakalandı
+(bugün 20 locale metni var; ölçüm tekrarlanmadı).
 
 `src/data/changelog.ts`'teki `const source: Source = raw` **kontrolün kendisi**:
 `text` alanı `Record<Locale, string>` olduğu için bir girdide Almanca eksikse

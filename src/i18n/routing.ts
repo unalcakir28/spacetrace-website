@@ -1,11 +1,13 @@
 import { LOCALES, DEFAULT_LOCALE, isLocale, type Locale } from "./config";
 
 /**
- * The site is a GitHub Pages *project* site, so everything hangs off
- * `/spacetrace`. Astro exposes that as `import.meta.env.BASE_URL`, and every
- * internal href goes through here rather than being typed by hand: a missing
- * base prefix works in `astro dev` and 404s in production, which is the worst
- * moment to find out.
+ * The site serves from the root of its own domain, so the base is `/`. It used
+ * to be a GitHub Pages *project* site hanging off `/spacetrace`, and the move
+ * to a domain was a one-line config change precisely because every internal
+ * href goes through here rather than being typed by hand. Astro exposes the
+ * base as `import.meta.env.BASE_URL`; keep using it, because a hand-written
+ * path works in `astro dev` and 404s in production, which is the worst moment
+ * to find out.
  */
 const BASE = import.meta.env.BASE_URL.replace(/\/+$/, "");
 
@@ -21,7 +23,7 @@ export const PAGES = [
 ] as const;
 export type Page = (typeof PAGES)[number];
 
-/** `/spacetrace/tr/desktop/` — locale prefix omitted for the default. */
+/** `/tr/desktop/` — locale prefix omitted for the default. */
 export function localeUrl(locale: Locale, page: Page = ""): string {
   const prefix = locale === DEFAULT_LOCALE ? "" : `/${locale}`;
   const tail = page ? `/${page}` : "";
