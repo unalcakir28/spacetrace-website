@@ -95,6 +95,7 @@ there.
 |------|----------|
 | `preflight` (skill) | Before a push; a push goes straight to production |
 | `web-design-guidelines` (skill) | UI review; vendored from `vercel-labs/agent-skills` (`23cb294`) |
+| `no-yarn-check` (hook) | Refuses the bare `yarn check` — yarn 1.x's builtin, which reports success without type checking anything |
 
 `preflight` **triggers on its own** — because a push goes straight to
 production, it is most valuable right before a push.
