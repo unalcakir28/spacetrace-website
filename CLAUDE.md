@@ -110,8 +110,10 @@ The shared tools come from the `spacetrace-tools` plugin, with the
 **`download-contract`** — it compares the tag and asset names in
 `src/data/releases.ts` against the ones the core's release workflows
 produce. **This repo is the other end of the contract** and no CI sees both
-of them, so this is the only check. Also `doc-drift-auditor`,
-`workspace-audit` and `code-reviewer`.
+of them, so the plugin is the only place either side is checked: the skill
+compares them, and the `download-contract-drift` Stop hook asks when a
+session changed `releases.ts` while the producing end stayed put. Also
+`doc-drift-auditor`, `workspace-audit` and `code-reviewer`.
 
 I do not keep the full list here, it is in the plugin's README; so is the
 installation. The plugin is a private repo — since this repo is public, I
