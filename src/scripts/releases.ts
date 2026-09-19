@@ -94,21 +94,25 @@ function formatDate(iso: string, locale: string): string {
   }).format(date);
 }
 
-/** The newest stable release for a component, or its rolling build. */
+/**
+ * The newest stable release for a component.
+ *
+ * There is no second choice any more. This used to fall back to the rolling
+ * `…-continuous` build when a component had no stable release; that channel
+ * was removed on 19 September 2026 and every component has a stable release,
+ * so the fallback answered `null` in every case it could still be reached.
+ *
+ * `prerelease` is skipped, which is what keeps `desktop-latest` out — it is
+ * the updater's manifest, one JSON file, not a release anyone downloads.
+ */
 function pick(releases: ApiRelease[], component: Component): ApiRelease | null {
   const spec = CHANNELS[component];
-  let stable: ApiRelease | null = null;
-  let rolling: ApiRelease | null = null;
   for (const release of releases) {
-    if (release.draft) continue;
-    if (release.tag_name === spec.rolling) {
-      rolling = release;
-    } else if (!stable && !release.prerelease && spec.stable.test(release.tag_name)) {
-      // The API answers newest first, so the first match is the newest.
-      stable = release;
-    }
+    if (release.draft || release.prerelease) continue;
+    // The API answers newest first, so the first match is the newest.
+    if (spec.stable.test(release.tag_name)) return release;
   }
-  return stable ?? rolling;
+  return null;
 }
 
 function applyRelease(
