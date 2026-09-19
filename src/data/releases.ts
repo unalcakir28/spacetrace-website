@@ -20,11 +20,26 @@ export const INSTALL_SH = `https://raw.githubusercontent.com/${REPO_SLUG}/main/i
 
 export type Component = "desktop" | "cli" | "hub";
 
-/** Rolling tag, and the pattern that recognises a stable release. */
-export const CHANNELS: Record<Component, { rolling: string; stable: RegExp }> = {
-  desktop: { rolling: "desktop-continuous", stable: /^desktop-v\d/ },
-  cli: { rolling: "continuous", stable: /^v\d/ },
-  hub: { rolling: "hub-continuous", stable: /^hub-v\d/ },
+/**
+ * The pattern that recognises a stable release, and one real tag to fall back
+ * on before the API answers.
+ *
+ * There used to be a rolling `…-continuous` tag here and the fallbacks pointed
+ * at it, which is why they never went stale: it was republished on every push
+ * to main. That channel was removed on 19 September 2026 — a build now happens
+ * only when a version is named — so these have to name a version too.
+ *
+ * **`fallback` is a live link on a production page.** It is the `href` baked
+ * into the HTML and the tag in the `curl` line under the checksums, and the
+ * script only upgrades it once the releases API answers. Point it at a tag
+ * that does not exist and every download button 404s for anyone whose
+ * JavaScript did not run. It moves with each release; `download-contract` is
+ * the skill that checks it still resolves.
+ */
+export const CHANNELS: Record<Component, { fallback: string; stable: RegExp }> = {
+  desktop: { fallback: "desktop-v0.7.0", stable: /^desktop-v\d/ },
+  cli: { fallback: "v0.8.0", stable: /^v\d/ },
+  hub: { fallback: "hub-v0.5.0", stable: /^hub-v\d/ },
 };
 
 export type Os = "macos" | "windows" | "linux";
@@ -43,7 +58,7 @@ export interface Asset {
 }
 
 function url(component: Component, name: string): string {
-  return `${REPO_URL}/releases/download/${CHANNELS[component].rolling}/${name}`;
+  return `${REPO_URL}/releases/download/${CHANNELS[component].fallback}/${name}`;
 }
 
 /** The href to use before (or without) the releases API answering. */
@@ -59,34 +74,34 @@ export const DESKTOP_ASSETS: Asset[] = [
   {
     component: "desktop",
     match: "macos-universal.dmg",
-    fallbackName: "spacetrace-desktop-continuous-macos-universal.dmg",
+    fallbackName: "spacetrace-desktop-v0.7.0-macos-universal.dmg",
     os: "macos",
     primary: true,
   },
   {
     component: "desktop",
     match: "windows-x86_64-setup.exe",
-    fallbackName: "spacetrace-desktop-continuous-windows-x86_64-setup.exe",
+    fallbackName: "spacetrace-desktop-v0.7.0-windows-x86_64-setup.exe",
     os: "windows",
     primary: true,
   },
   {
     component: "desktop",
     match: "linux-x86_64.deb",
-    fallbackName: "spacetrace-desktop-continuous-linux-x86_64.deb",
+    fallbackName: "spacetrace-desktop-v0.7.0-linux-x86_64.deb",
     os: "linux",
     primary: true,
   },
   {
     component: "desktop",
     match: "linux-x86_64.rpm",
-    fallbackName: "spacetrace-desktop-continuous-linux-x86_64.rpm",
+    fallbackName: "spacetrace-desktop-v0.7.0-linux-x86_64.rpm",
     os: "linux",
   },
   {
     component: "desktop",
     match: "linux-x86_64.AppImage",
-    fallbackName: "spacetrace-desktop-continuous-linux-x86_64.AppImage",
+    fallbackName: "spacetrace-desktop-v0.7.0-linux-x86_64.AppImage",
     os: "linux",
   },
 ];
@@ -95,31 +110,31 @@ export const CLI_ASSETS: Asset[] = [
   {
     component: "cli",
     match: "aarch64-apple-darwin.tar.gz",
-    fallbackName: "spacetrace-continuous-aarch64-apple-darwin.tar.gz",
+    fallbackName: "spacetrace-v0.8.0-aarch64-apple-darwin.tar.gz",
     os: "macos",
   },
   {
     component: "cli",
     match: "x86_64-apple-darwin.tar.gz",
-    fallbackName: "spacetrace-continuous-x86_64-apple-darwin.tar.gz",
+    fallbackName: "spacetrace-v0.8.0-x86_64-apple-darwin.tar.gz",
     os: "macos",
   },
   {
     component: "cli",
     match: "x86_64-unknown-linux-musl.tar.gz",
-    fallbackName: "spacetrace-continuous-x86_64-unknown-linux-musl.tar.gz",
+    fallbackName: "spacetrace-v0.8.0-x86_64-unknown-linux-musl.tar.gz",
     os: "linux",
   },
   {
     component: "cli",
     match: "aarch64-unknown-linux-musl.tar.gz",
-    fallbackName: "spacetrace-continuous-aarch64-unknown-linux-musl.tar.gz",
+    fallbackName: "spacetrace-v0.8.0-aarch64-unknown-linux-musl.tar.gz",
     os: "linux",
   },
   {
     component: "cli",
     match: "x86_64-pc-windows-msvc.zip",
-    fallbackName: "spacetrace-continuous-x86_64-pc-windows-msvc.zip",
+    fallbackName: "spacetrace-v0.8.0-x86_64-pc-windows-msvc.zip",
     os: "windows",
     primary: true,
   },
@@ -129,25 +144,25 @@ export const HUB_ASSETS: Asset[] = [
   {
     component: "hub",
     match: "x86_64-unknown-linux-musl.tar.gz",
-    fallbackName: "spacetrace-hub-continuous-x86_64-unknown-linux-musl.tar.gz",
+    fallbackName: "spacetrace-hub-v0.5.0-x86_64-unknown-linux-musl.tar.gz",
     os: "linux",
   },
   {
     component: "hub",
     match: "aarch64-unknown-linux-musl.tar.gz",
-    fallbackName: "spacetrace-hub-continuous-aarch64-unknown-linux-musl.tar.gz",
+    fallbackName: "spacetrace-hub-v0.5.0-aarch64-unknown-linux-musl.tar.gz",
     os: "linux",
   },
   {
     component: "hub",
     match: "aarch64-apple-darwin.tar.gz",
-    fallbackName: "spacetrace-hub-continuous-aarch64-apple-darwin.tar.gz",
+    fallbackName: "spacetrace-hub-v0.5.0-aarch64-apple-darwin.tar.gz",
     os: "macos",
   },
   {
     component: "hub",
     match: "x86_64-apple-darwin.tar.gz",
-    fallbackName: "spacetrace-hub-continuous-x86_64-apple-darwin.tar.gz",
+    fallbackName: "spacetrace-hub-v0.5.0-x86_64-apple-darwin.tar.gz",
     os: "macos",
   },
 ];
