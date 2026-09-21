@@ -53,7 +53,9 @@ What break easy:
 
 Until 16 September 2026 vendored skill sat under `.agents/skills/` and never load — Claude Code read `.claude/skills/`. Dangling symlink to it in core repo deleted same time. One real copy, here.
 
-From shared `spacetrace-tools` plugin (install it, and full list, sit in workspace note and plugin README), the one that matter here be **`download-contract`**: it compare tag and asset name in `src/data/releases.ts` against what core release workflow make. **This repo be other end of that contract and no CI see both end**, so plugin be only check either side get — skill compare them, and `download-contract-drift` Stop hook ask when session move `releases.ts` and leave producing end alone. Also `doc-drift-auditor`, `workspace-audit`, `code-reviewer`. Plugin private and this repo public, so it named not linked.
+From shared `spacetrace-tools` plugin (install it, and full list, sit in workspace note and plugin README), the one that matter here be **`download-contract`**: it compare tag and asset name in `src/data/releases.ts` against what core release workflow make. **This repo be other end of that contract and no CI see both end**, so plugin be only check either side get — skill compare them, and `download-contract-drift` Stop hook ask when session move `releases.ts` and leave producing end alone.
+
+**That hook read `git status`, so it blind to release cut in earlier session** — tree clean, hook silent. `release-landed-guard` SessionStart hook cover that side: it ask GitHub what be published and compare against `CHANNELS[…].fallback` here and against last successful `pages.yml` run. It catch exact thing that got missed — `desktop-v0.8.0` out 19 September 15:04 UTC, last site build 10:49 same day, page offer 0.7.0 for two day. `release-landed` skill be manual form of same four check. Also `doc-drift-auditor`, `workspace-audit`, `code-reviewer`. Plugin private and this repo public, so it named not linked.
 
 ### Automatic language detection
 
