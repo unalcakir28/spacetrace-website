@@ -37,7 +37,7 @@ export type Component = "desktop" | "cli" | "hub";
  * the skill that checks it still resolves.
  */
 export const CHANNELS: Record<Component, { fallback: string; stable: RegExp }> = {
-  desktop: { fallback: "desktop-v0.7.0", stable: /^desktop-v\d/ },
+  desktop: { fallback: "desktop-v0.8.0", stable: /^desktop-v\d/ },
   cli: { fallback: "v0.8.0", stable: /^v\d/ },
   hub: { fallback: "hub-v0.5.0", stable: /^hub-v\d/ },
 };
@@ -74,34 +74,34 @@ export const DESKTOP_ASSETS: Asset[] = [
   {
     component: "desktop",
     match: "macos-universal.dmg",
-    fallbackName: "spacetrace-desktop-v0.7.0-macos-universal.dmg",
+    fallbackName: "spacetrace-desktop-v0.8.0-macos-universal.dmg",
     os: "macos",
     primary: true,
   },
   {
     component: "desktop",
     match: "windows-x86_64-setup.exe",
-    fallbackName: "spacetrace-desktop-v0.7.0-windows-x86_64-setup.exe",
+    fallbackName: "spacetrace-desktop-v0.8.0-windows-x86_64-setup.exe",
     os: "windows",
     primary: true,
   },
   {
     component: "desktop",
     match: "linux-x86_64.deb",
-    fallbackName: "spacetrace-desktop-v0.7.0-linux-x86_64.deb",
+    fallbackName: "spacetrace-desktop-v0.8.0-linux-x86_64.deb",
     os: "linux",
     primary: true,
   },
   {
     component: "desktop",
     match: "linux-x86_64.rpm",
-    fallbackName: "spacetrace-desktop-v0.7.0-linux-x86_64.rpm",
+    fallbackName: "spacetrace-desktop-v0.8.0-linux-x86_64.rpm",
     os: "linux",
   },
   {
     component: "desktop",
     match: "linux-x86_64.AppImage",
-    fallbackName: "spacetrace-desktop-v0.7.0-linux-x86_64.AppImage",
+    fallbackName: "spacetrace-desktop-v0.8.0-linux-x86_64.AppImage",
     os: "linux",
   },
 ];
