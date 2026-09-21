@@ -417,9 +417,9 @@ export const tr: Dictionary = {
     hubCaption:
       "Konteyner imajı iki mimariyi de taşıyor, yani docker pull etiket eki olmadan doğru olanı alıyor.",
 
-    unsignedTitle: "Buradaki hiçbir şey imzalı değil",
+    unsignedTitle: "Buradaki hiçbir şeyde Apple ya da Microsoft imzası yok",
     unsignedBody:
-      "İmzalama sertifikaları yıllık ücretli ve bir public depoda duramıyor; bu yüzden macOS ve Windows ilk seferde ikisi de seni durduruyor. Bu, şüphe duymayı hak eden bir durum — her dosyanın yanında bir sağlama toplamı yayınlanmasının ve derlemenin okuyabildiğin bir iş akışı olmasının sebebi bu.",
+      "O sertifikalar yıllık ücretli ve bir public depoda duramıyor; bu yüzden macOS ve Windows ilk seferde ikisi de seni durduruyor. Bu, şüphe duymayı hak eden bir durum — her dosyanın yanında bir sağlama toplamı yayınlanmasının ve derlemenin okuyabildiğin bir iş akışı olmasının sebebi bu. macOS uygulaması kendi sertifikamızla imzalı, ama bunun tek amacı verdiğin disk erişiminin bir güncellemeden sonra da hatırlanması — Apple'ın onayladığı bir imza değil ve aşağıdaki uyarıyı da engellemiyor.",
 
     installMacTitle: "macOS: “spacetrace açılamıyor”",
     installMacBody:
@@ -431,9 +431,9 @@ export const tr: Dictionary = {
       "“Windows bilgisayarınızı korudu” → Daha fazla bilgi → Yine de çalıştır. Kurulum kullanıcı düzeyinde ve yönetici hakkı istemiyor.",
     installAltTitle: "Alternatif: komut satırından kurulum (geçici)",
     installAltBody:
-      "Yukarıdaki .dmg ve .exe normal yol, ve tercih edilmesi gereken yol. Bu bölüm yalnızca uygulama henüz imzalı olmadığı için burada. Aşağıdaki komutlar tam olarak aynı dosyayı indirir, yayınlanan SHA256SUMS ile doğrular ve kurar — ve bu şekilde inen bir dosya tarayıcının yazdığı işaretleri taşımadığı için Gatekeeper'ın da SmartScreen'in de uyaracak bir şeyi kalmaz.",
+      "Yukarıdaki .dmg ve .exe normal yol, ve tercih edilmesi gereken yol. Bu bölüm yalnızca uygulamada işletim sistemlerinin güvendiği bir sertifika olmadığı için burada. Aşağıdaki komutlar tam olarak aynı dosyayı indirir, yayınlanan SHA256SUMS ile doğrular ve kurar — ve bu şekilde inen bir dosya tarayıcının yazdığı işaretleri taşımadığı için Gatekeeper'ın da SmartScreen'in de uyaracak bir şeyi kalmaz.",
     installAltNote:
-      "İmza, uygulamayı kimin derlediğini kanıtlar. Sağlama toplamı yalnızca baytların yolda değişmediğini kanıtlar. Yani bu yolu ancak bu projeye zaten güveniyorsanız kullanın — ve kalıcı olmadığını bilin: uygulama imzalandığında .dmg zaten öylece açılacak ve bu betikler silinecek.",
+      "İmza, uygulamayı kimin derlediğini kanıtlar. Sağlama toplamı yalnızca baytların yolda değişmediğini kanıtlar. Yani bu yolu ancak bu projeye zaten güveniyorsanız kullanın — ve kalıcı olmadığını bilin: uygulama güvenilen bir sertifika taşıdığında .dmg zaten öylece açılacak ve bu betikler silinecek.",
     installLinuxTitle: "Linux",
     installLinuxBody:
       "AppImage'in hiç kurulmaya ihtiyacı yok: çalıştırılabilir işaretle ve çalıştır. Wayland'de pencere boş geliyorsa WEBKIT_DISABLE_DMABUF_RENDERER=1 ile çalıştır — bu bir WebKitGTK sorunu, uygulamanın değil.",

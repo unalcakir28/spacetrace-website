@@ -416,9 +416,9 @@ export const de: Dictionary = {
     hubCaption:
       "Das Container-Image enthält beide Architekturen, docker pull holt also die richtige ohne Tag-Zusatz.",
 
-    unsignedTitle: "Nichts hiervon ist signiert",
+    unsignedTitle: "Nichts hiervon trägt eine Signatur von Apple oder Microsoft",
     unsignedBody:
-      "Signaturzertifikate kosten jährlich Geld und können nicht in einem öffentlichen Repository liegen — macOS und Windows halten Sie also beide beim ersten Mal auf. Das verdient Misstrauen, und genau deshalb steht neben jeder Datei eine Prüfsumme und der Build ist ein Workflow, den Sie lesen können.",
+      "Diese Zertifikate kosten jährlich Geld und können nicht in einem öffentlichen Repository liegen — macOS und Windows halten Sie also beide beim ersten Mal auf. Das verdient Misstrauen, und genau deshalb steht neben jeder Datei eine Prüfsumme und der Build ist ein Workflow, den Sie lesen können. Die macOS-App ist mit einem eigenen Zertifikat signiert, aber nur damit das System den gewährten Festplattenzugriff über ein Update hinweg behält — Apple bürgt nicht dafür, und die Warnung unten verhindert es nicht.",
 
     installMacTitle: "macOS: „spacetrace kann nicht geöffnet werden“",
     installMacBody:
@@ -430,9 +430,9 @@ export const de: Dictionary = {
       "„Der Computer wurde durch Windows geschützt“ → Weitere Informationen → Trotzdem ausführen. Der Installer läuft pro Benutzer und braucht keine Administratorrechte.",
     installAltTitle: "Alternative: Installation über die Kommandozeile (vorübergehend)",
     installAltBody:
-      "Das .dmg und die .exe oben sind der normale Weg und der, den Sie bevorzugen sollten. Dieser Abschnitt steht hier nur, weil die App noch nicht signiert ist. Diese Befehle laden exakt dieselbe Datei, prüfen sie gegen die veröffentlichte SHA256SUMS und installieren sie — und da ein so geholter Download keine der Markierungen trägt, die ein Browser schreibt, haben Gatekeeper und SmartScreen nichts zu melden.",
+      "Das .dmg und die .exe oben sind der normale Weg und der, den Sie bevorzugen sollten. Dieser Abschnitt steht hier nur, weil die App kein Zertifikat trägt, dem die Betriebssysteme vertrauen. Diese Befehle laden exakt dieselbe Datei, prüfen sie gegen die veröffentlichte SHA256SUMS und installieren sie — und da ein so geholter Download keine der Markierungen trägt, die ein Browser schreibt, haben Gatekeeper und SmartScreen nichts zu melden.",
     installAltNote:
-      "Eine Signatur beweist, wer die App gebaut hat. Eine Prüfsumme beweist nur, dass sich die Bytes unterwegs nicht geändert haben. Nehmen Sie diesen Weg also nur, wenn Sie diesem Projekt ohnehin vertrauen — und rechnen Sie damit, dass er verschwindet: sobald die App signiert ist, öffnet sich das .dmg einfach und diese Skripte werden gelöscht.",
+      "Eine Signatur beweist, wer die App gebaut hat. Eine Prüfsumme beweist nur, dass sich die Bytes unterwegs nicht geändert haben. Nehmen Sie diesen Weg also nur, wenn Sie diesem Projekt ohnehin vertrauen — und rechnen Sie damit, dass er verschwindet: sobald die App ein vertrauenswürdiges Zertifikat trägt, öffnet sich das .dmg einfach und diese Skripte werden gelöscht.",
     installLinuxTitle: "Linux",
     installLinuxBody:
       "Das AppImage braucht keine Installation: ausführbar machen und starten. Bleibt das Fenster unter Wayland leer, mit WEBKIT_DISABLE_DMABUF_RENDERER=1 starten — das ist ein WebKitGTK-Problem, keines der App.",

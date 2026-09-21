@@ -436,9 +436,9 @@ export const en = {
     hubCaption:
       "The container image carries both architectures, so docker pull gets the right one without a tag suffix.",
 
-    unsignedTitle: "Nothing here is code-signed",
+    unsignedTitle: "Nothing here carries an Apple or Microsoft signature",
     unsignedBody:
-      "Signing certificates cost money per year and cannot live in a public repository, so macOS and Windows will both stop you the first time. That is worth being suspicious about, which is why a checksum is published beside every file and the build is a workflow you can read.",
+      "Those certificates cost money per year and cannot live in a public repository, so macOS and Windows will both stop you the first time. That is worth being suspicious about, which is why a checksum is published beside every file and the build is a workflow you can read. The macOS app is signed with a certificate of our own, but only so that the system remembers the disk access you grant it from one update to the next — it is not one Apple vouches for, and it does not stop the warning below.",
 
     installMacTitle: "macOS: “spacetrace can’t be opened”",
     installMacBody:
@@ -450,9 +450,9 @@ export const en = {
       "“Windows protected your PC” → More info → Run anyway. The installer is per-user and needs no administrator rights.",
     installAltTitle: "Alternative: install from the command line (temporary)",
     installAltBody:
-      "The .dmg and the .exe above are the normal way in and the ones to prefer. This is here only because the app is not signed yet. These commands fetch exactly the same file, check it against the published SHA256SUMS and install it — and because a download made this way carries none of the marks a browser writes, Gatekeeper and SmartScreen have nothing to warn about.",
+      "The .dmg and the .exe above are the normal way in and the ones to prefer. This is here only because the app carries no certificate the operating systems trust. These commands fetch exactly the same file, check it against the published SHA256SUMS and install it — and because a download made this way carries none of the marks a browser writes, Gatekeeper and SmartScreen have nothing to warn about.",
     installAltNote:
-      "A signature proves who built the app. A checksum only proves the bytes did not change on the way. So take this route only if you already trust this project — and expect it to go away: once the app is signed, the .dmg will simply open and these scripts get deleted.",
+      "A signature proves who built the app. A checksum only proves the bytes did not change on the way. So take this route only if you already trust this project — and expect it to go away: once the app carries a trusted certificate, the .dmg will simply open and these scripts get deleted.",
     installLinuxTitle: "Linux",
     installLinuxBody:
       "The AppImage needs no install at all: mark it executable and run it. On Wayland, if the window comes up blank, run it with WEBKIT_DISABLE_DMABUF_RENDERER=1 — a WebKitGTK issue rather than an app one.",

@@ -417,9 +417,9 @@ export const it: Dictionary = {
     hubCaption:
       "L'immagine del container contiene entrambe le architetture, quindi docker pull prende quella giusta senza suffissi nel tag.",
 
-    unsignedTitle: "Niente qui è firmato digitalmente",
+    unsignedTitle: "Niente qui porta una firma Apple o Microsoft",
     unsignedBody:
-      "I certificati di firma costano ogni anno e non possono stare in un repository pubblico, quindi macOS e Windows ti fermeranno entrambi la prima volta. È giusto essere sospettosi, ed è per questo che accanto a ogni file c'è un checksum e la build è un workflow che puoi leggere.",
+      "Quei certificati costano ogni anno e non possono stare in un repository pubblico, quindi macOS e Windows ti fermeranno entrambi la prima volta. È giusto essere sospettosi, ed è per questo che accanto a ogni file c'è un checksum e la build è un workflow che puoi leggere. L'app macOS è firmata con un certificato nostro, ma solo perché il sistema ricordi l'accesso al disco che le concedi da un aggiornamento al successivo: non è una firma garantita da Apple e non evita l'avviso qui sotto.",
 
     installMacTitle: "macOS: “impossibile aprire spacetrace”",
     installMacBody:
@@ -431,9 +431,9 @@ export const it: Dictionary = {
       "“Windows ha protetto il PC” → Ulteriori informazioni → Esegui comunque. L'installer è per utente e non richiede diritti di amministratore.",
     installAltTitle: "Alternativa: installazione da riga di comando (temporanea)",
     installAltBody:
-      "Il .dmg e l'.exe qui sopra sono la via normale, ed è quella da preferire. Questa sezione esiste solo perché l'app non è ancora firmata. Questi comandi scaricano esattamente lo stesso file, lo verificano con il SHA256SUMS pubblicato e lo installano — e poiché un download fatto così non porta i contrassegni che scrive un browser, Gatekeeper e SmartScreen non hanno nulla di cui avvisarti.",
+      "Il .dmg e l'.exe qui sopra sono la via normale, ed è quella da preferire. Questa sezione esiste solo perché l'app non ha un certificato di cui i sistemi operativi si fidino. Questi comandi scaricano esattamente lo stesso file, lo verificano con il SHA256SUMS pubblicato e lo installano — e poiché un download fatto così non porta i contrassegni che scrive un browser, Gatekeeper e SmartScreen non hanno nulla di cui avvisarti.",
     installAltNote:
-      "Una firma dimostra chi ha costruito l'app. Un checksum dimostra solo che i byte non sono cambiati per strada. Quindi prendi questa strada solo se ti fidi già di questo progetto — e aspettati che sparisca: quando l'app sarà firmata, il .dmg si aprirà normalmente e questi script verranno eliminati.",
+      "Una firma dimostra chi ha costruito l'app. Un checksum dimostra solo che i byte non sono cambiati per strada. Quindi prendi questa strada solo se ti fidi già di questo progetto — e aspettati che sparisca: quando l'app avrà un certificato affidabile, il .dmg si aprirà normalmente e questi script verranno eliminati.",
     installLinuxTitle: "Linux",
     installLinuxBody:
       "L'AppImage non richiede alcuna installazione: rendila eseguibile ed eseguila. Su Wayland, se la finestra resta bianca, esegui con WEBKIT_DISABLE_DMABUF_RENDERER=1 — è un problema di WebKitGTK, non dell'app.",

@@ -417,9 +417,9 @@ export const fr: Dictionary = {
     hubCaption:
       "L'image du conteneur contient les deux architectures : docker pull prend la bonne sans suffixe de tag.",
 
-    unsignedTitle: "Rien ici n'est signé",
+    unsignedTitle: "Rien ici ne porte de signature Apple ou Microsoft",
     unsignedBody:
-      "Les certificats de signature coûtent de l'argent chaque année et ne peuvent pas vivre dans un dépôt public : macOS et Windows vous arrêteront tous les deux la première fois. Cela mérite de la méfiance, et c'est pourquoi une somme de contrôle est publiée à côté de chaque fichier et la build est un workflow que vous pouvez lire.",
+      "Ces certificats coûtent de l'argent chaque année et ne peuvent pas vivre dans un dépôt public : macOS et Windows vous arrêteront tous les deux la première fois. Cela mérite de la méfiance, et c'est pourquoi une somme de contrôle est publiée à côté de chaque fichier et la build est un workflow que vous pouvez lire. L'application macOS est signée avec un certificat qui nous appartient, mais uniquement pour que le système se souvienne de l'accès disque que vous lui accordez d'une mise à jour à l'autre : ce n'est pas une signature dont Apple se porte garant, et elle n'évite pas l'avertissement ci-dessous.",
 
     installMacTitle: "macOS : « impossible d'ouvrir spacetrace »",
     installMacBody:
@@ -431,9 +431,9 @@ export const fr: Dictionary = {
       "« Windows a protégé votre ordinateur » → Informations complémentaires → Exécuter quand même. L'installateur est par utilisateur et n'exige aucun droit d'administrateur.",
     installAltTitle: "Alternative : installation en ligne de commande (temporaire)",
     installAltBody:
-      "Le .dmg et l'.exe ci-dessus sont la voie normale, et celle à préférer. Cette section n'existe que parce que l'application n'est pas encore signée. Ces commandes téléchargent exactement le même fichier, le vérifient contre le SHA256SUMS publié et l'installent — et comme un téléchargement fait ainsi ne porte aucune des marques qu'écrit un navigateur, Gatekeeper et SmartScreen n'ont rien à signaler.",
+      "Le .dmg et l'.exe ci-dessus sont la voie normale, et celle à préférer. Cette section n'existe que parce que l'application ne porte aucun certificat auquel les systèmes d'exploitation se fient. Ces commandes téléchargent exactement le même fichier, le vérifient contre le SHA256SUMS publié et l'installent — et comme un téléchargement fait ainsi ne porte aucune des marques qu'écrit un navigateur, Gatekeeper et SmartScreen n'ont rien à signaler.",
     installAltNote:
-      "Une signature prouve qui a construit l'application. Une somme de contrôle prouve seulement que les octets n'ont pas changé en route. Ne prenez donc ce chemin que si vous faites déjà confiance à ce projet — et attendez-vous à le voir disparaître : une fois l'application signée, le .dmg s'ouvrira simplement et ces scripts seront supprimés.",
+      "Une signature prouve qui a construit l'application. Une somme de contrôle prouve seulement que les octets n'ont pas changé en route. Ne prenez donc ce chemin que si vous faites déjà confiance à ce projet — et attendez-vous à le voir disparaître : une fois que l'application portera un certificat de confiance, le .dmg s'ouvrira simplement et ces scripts seront supprimés.",
     installLinuxTitle: "Linux",
     installLinuxBody:
       "L'AppImage n'a besoin d'aucune installation : rendez-la exécutable et lancez-la. Sous Wayland, si la fenêtre reste blanche, lancez-la avec WEBKIT_DISABLE_DMABUF_RENDERER=1 — c'est un problème de WebKitGTK, pas de l'application.",
