@@ -4,8 +4,10 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import LangRedirect from "../components/LangRedirect.astro";
 import LangNotice from "../components/LangNotice.astro";
-import { t, LOCALE_TAGS, type Locale } from "../i18n";
+import { t, LOCALE_TAGS, OG_LOCALES, type Locale } from "../i18n";
 import { alternates, localeUrl, asset, type Page } from "../i18n/routing";
+import { structuredData } from "../data/structuredData";
+import { SITE_NAME, OG_IMAGE, VERIFICATION } from "../data/seo";
 
 interface Props {
   locale: Locale;
@@ -14,6 +16,12 @@ interface Props {
   description: string;
   /** Off for 404, whose path is not one of the translated routes. */
   detectLanguage?: boolean;
+  /**
+   * Keep this page out of search results. Only 404 sets it: its path is not a
+   * translated route, it has no canonical of its own worth indexing, and an
+   * indexed error page is a result that wastes whoever clicks it.
+   */
+  noindex?: boolean;
 }
 
 const {
@@ -22,10 +30,16 @@ const {
   title,
   description,
   detectLanguage = true,
+  noindex = false,
 } = Astro.props;
 const dict = t(locale);
 const alts = alternates(page);
 const canonical = new URL(localeUrl(locale, page), Astro.site);
+const ogImage = new URL(asset(OG_IMAGE.file), Astro.site);
+// Absolute, because a relative og:image is not resolved by most scrapers.
+const jsonLd = noindex
+  ? null
+  : structuredData({ locale, page, title, description, site: Astro.site! });
 ---
 
 <!doctype html>
@@ -42,6 +56,19 @@ const canonical = new URL(localeUrl(locale, page), Astro.site);
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical.href} />
+    {
+      /* `index,follow` is already the default; the rest is not. The two `max-`
+         directives are what let Google show a full-size image and an untruncated
+         snippet, and without them it picks conservative defaults. */
+      noindex ? (
+        <meta name="robots" content="noindex,follow" />
+      ) : (
+        <meta
+          name="robots"
+          content="index,follow,max-image-preview:large,max-snippet:-1"
+        />
+      )
+    }
     <link rel="icon" href={asset("favicon.svg")} type="image/svg+xml" />
     <meta name="theme-color" content="#080b14" />
     <meta name="generator" content={Astro.generator} />
@@ -76,10 +103,58 @@ const canonical = new URL(localeUrl(locale, page), Astro.site);
     />
 
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE_NAME} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical.href} />
-    <meta property="og:locale" content={LOCALE_TAGS[locale]} />
+    <!-- `en_US`, not the bare `en` used for hreflang: Open Graph wants
+         language_TERRITORY and scrapers ignore the short form. See OG_LOCALES. -->
+    <meta property="og:locale" content={OG_LOCALES[locale]} />
+    {
+      alts
+        .filter(({ locale: l }) => l !== locale)
+        .map(({ locale: l }) => (
+          <meta property="og:locale:alternate" content={OG_LOCALES[l]} />
+        ))
+    }
+    <meta property="og:image" content={ogImage.href} />
+    <meta property="og:image:width" content={String(OG_IMAGE.width)} />
+    <meta property="og:image:height" content={String(OG_IMAGE.height)} />
+    <meta property="og:image:alt" content={OG_IMAGE.alt} />
+
+    <!-- No `twitter:title` or `twitter:description`: X falls back to the Open
+         Graph ones above, and a second copy is a second thing to keep in step.
+         No `twitter:site` either, because this project has no account to name. -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImage.href} />
+    <meta name="twitter:image:alt" content={OG_IMAGE.alt} />
+
+    {
+      /* Rendered only when a token has been pasted into src/data/seo.ts. An
+         empty meta tag is a failed verification that looks like a done one. */
+      VERIFICATION.google && (
+        <meta name="google-site-verification" content={VERIFICATION.google} />
+      )
+    }
+    {
+      VERIFICATION.bing && (
+        <meta name="msvalidate.01" content={VERIFICATION.bing} />
+      )
+    }
+
+    {
+      /* Static JSON-LD in the markup, not injected: the AI crawlers this is
+         aimed at do not run JavaScript. `set:html` with JSON.stringify rather
+         than a template child — Astro would print the wrapper around a JSX
+         expression into the document and the graph would arrive as a string. */
+      jsonLd && (
+        <script
+          type="application/ld+json"
+          is:inline
+          set:html={JSON.stringify(jsonLd)}
+        />
+      )
+    }
 
     <!-- Inline and first: the reveal styles only apply when JavaScript is
          running, so the class has to land before the first paint or the page

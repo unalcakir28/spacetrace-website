@@ -1,0 +1,187 @@
+<!doctype html>
+<!--
+  Source for public/og.png — the share card. Rendered by hand and the resulting
+  PNG is committed; nothing builds this at deploy time.
+
+  Why a rendered HTML file rather than a hand-drawn image: the card has to use
+  the site's own palette and typography, and those live in CSS. Duplicating
+  them into a design tool is how a share card ends up the last place still
+  showing last year's colours. The values below are copied from
+  src/styles/global.css — if the palette changes there and this card starts to
+  look foreign, that is the signal to render it again.
+
+  TO REGENERATE:
+    1. Serve this directory over HTTP — a file:// URL cannot load the web font,
+       and the headline is the font. Anything will do:
+         python3 -m http.server 8391 --bind 127.0.0.1
+    2. Open http://127.0.0.1:8391/og-card.html with the viewport set to exactly
+       1200×630 and screenshot it at device scale, to public/og.png.
+    3. `yarn build && yarn verify:seo` — it reads the PNG's real dimensions out
+       of the file and refuses one that is the wrong size or suspiciously small,
+       which is what a blank render looks like.
+
+  There is no `yarn og`. A script that drives a browser needs either a large
+  devDependency this repo has decided against, or Chrome's `--screenshot`
+  flag, which hangs on current Chrome. A once-a-year manual step beats a
+  command that does not work.
+
+  The size is fixed at 1200×630 because that is what OG_IMAGE in
+  src/data/seo.ts declares to the scrapers. Change one and change the other.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=block"
+    />
+    <style>
+      :root {
+        --ink: #080b14;
+        --bg: #0d1120;
+        --panel-raised: #1c2340;
+        --panel-high: #262e4f;
+        --line-strong: #3a4468;
+        --text: #eaeefb;
+        --dim: #a7b1d0;
+        --accent: #8b9bff;
+        --hot: #ffb454;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 1200px;
+        height: 630px;
+      }
+
+      body {
+        display: grid;
+        /* The map is fixed and the copy takes the rest: the headline has to fit
+           in two lines at this size, and three lines reads as crowded once the
+           card is scaled down to a timeline thumbnail. */
+        grid-template-columns: 1fr 424px;
+        align-items: center;
+        gap: 56px;
+        padding: 72px;
+        background:
+          radial-gradient(
+            120% 90% at 8% 0%,
+            rgba(139, 155, 255, 0.16),
+            transparent 60%
+          ),
+          var(--ink);
+        font-family: Archivo, system-ui, sans-serif;
+        color: var(--text);
+        /* Font smoothing matters here: the PNG is scaled down by every surface
+           that shows it, and thin antialiased strokes survive that better. */
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .mark {
+        font-size: 30px;
+        font-weight: 700;
+        font-stretch: 78%;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+
+      h1 {
+        margin-top: 26px;
+        font-size: 66px;
+        line-height: 1.04;
+        font-weight: 800;
+        font-stretch: 82%;
+        letter-spacing: -0.022em;
+      }
+
+      h1 em {
+        font-style: normal;
+        color: var(--hot);
+      }
+
+      p {
+        margin-top: 28px;
+        font-size: 27px;
+        line-height: 1.42;
+        color: var(--dim);
+        max-width: 19em;
+      }
+
+      /* A treemap fragment, not a screenshot: a real one would be a picture of
+         one person's disk, and would date the moment the UI moves. The shape is
+         what carries the meaning — nested rectangles, one of them the culprit. */
+      .map {
+        display: grid;
+        grid-template-columns: 1.55fr 1fr;
+        grid-template-rows: 1.3fr 1fr 0.85fr;
+        gap: 10px;
+        height: 430px;
+        padding: 14px;
+        border: 1px solid var(--line-strong);
+        border-radius: 18px;
+        background: var(--bg);
+      }
+
+      .tile {
+        border-radius: 9px;
+        background: var(--panel-raised);
+        border: 1px solid rgba(255, 255, 255, 0.045);
+      }
+
+      .tile.high {
+        background: var(--panel-high);
+      }
+
+      .tile.split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding: 8px;
+        background: transparent;
+        border: 0;
+      }
+
+      .tile.grown {
+        grid-row: span 2;
+        background: linear-gradient(
+          160deg,
+          var(--hot),
+          rgba(255, 180, 84, 0.72)
+        );
+        border-color: rgba(255, 180, 84, 0.5);
+        /* The one thing on the card that glows, because it is the one thing the
+           product is for: the folder that grew. */
+        box-shadow: 0 0 44px rgba(255, 180, 84, 0.3);
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <div class="mark">spacetrace</div>
+      <h1>See what <em>grew</em>, not just what is big.</h1>
+      <p>
+        Scan a disk, keep the snapshot, compare next week. It names the folder
+        that filled up.
+      </p>
+    </div>
+
+    <div class="map">
+      <div class="tile high"></div>
+      <div class="tile grown"></div>
+      <div class="tile"></div>
+      <div class="tile split">
+        <div class="tile"></div>
+        <div class="tile high"></div>
+      </div>
+      <div class="tile high"></div>
+    </div>
+  </body>
+</html>

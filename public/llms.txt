@@ -1,0 +1,85 @@
+# spacetrace
+
+> Disk usage tool that answers "what grew?". It scans a disk, writes the result
+> to a SQLite snapshot, and compares two snapshots to name the folder that
+> filled up — rather than only showing what is large right now. There is a
+> desktop app with an interactive treemap, a command line tool, a server agent
+> that scans unattended, and a hub that watches a fleet of machines.
+
+Deliberately not version-specific: the current version, file names and release
+notes live on the pages linked below, which are generated from the release
+itself. No version number is written into this file, because nothing would
+keep it true.
+
+## What it measures, and why the numbers differ from other tools
+
+- Two sizes, never mixed: `size` is file bytes only, `alloc` is what the disk
+  actually holds, including directory blocks.
+- `alloc` tracks `df`, not `du`. With no shared blocks the two agree. With
+  sharing, `du` over-counts by exactly the shared blocks: it deduplicates
+  hardlinks but not APFS clones, which have their own inode while the data sits
+  on disk once. spacetrace deduplicates both.
+- Capacity is reported as free of total, never as a "% used" figure. On a
+  filesystem whose space is shared between volumes — an APFS container, btrfs
+  subvolumes, thin LVM — a used figure would include the siblings and disagree
+  with `df` about the same mount.
+- Sparse files are the reason the measure is a parameter and not a default: a
+  file can report up to 50 times what it holds, and those are the biggest
+  entries on a real disk.
+- Symbolic links are not followed and count with their own size. Hardlinked
+  files are counted once.
+- btrfs and ZFS real usage is reported wrongly today, because of reflinks and
+  compression. This is a known gap, not a claim.
+
+## Components and licensing
+
+- The scanner, snapshot store, diff, the `spacetrace` command line tool and the
+  `spacetrace-agent` server agent are Apache-2.0 and public.
+- The desktop app and the hub are proprietary and are not buildable from
+  source. That is the trade for the core staying permissively licensed.
+- The agent deletes nothing outside its own snapshot database. That is a
+  decision, so software installed on somebody's server can earn trust, not a
+  missing feature.
+
+## Pages
+
+- [Home](https://spacetrace.teknobakkall.com/): what the tool does, with an
+  interactive treemap that also renders without JavaScript.
+- [Desktop app](https://spacetrace.teknobakkall.com/desktop/): the treemap
+  window, for macOS, Windows and Linux.
+- [Command line and agent](https://spacetrace.teknobakkall.com/cli/): scan,
+  snapshot, diff, and reading a remote machine over HTTP. One static binary,
+  Apache-2.0.
+- [Hub](https://spacetrace.teknobakkall.com/hub/): fleet dashboard, growth
+  trend, threshold alerts. Self-hosted, Linux and macOS.
+- [Download](https://spacetrace.teknobakkall.com/download/): every file for
+  every platform, with the current version and checksums.
+- [Guide](https://spacetrace.teknobakkall.com/guide/): installing, the
+  commands, the flags, and what each reported number means.
+- [Changelog](https://spacetrace.teknobakkall.com/changelog/): what changed in
+  each released version of all three components.
+
+## Install
+
+The command line tool and the agent, on macOS and Linux:
+
+```
+curl -fsSL https://raw.githubusercontent.com/unalcakir28/spacetrace/main/install.sh | sh
+```
+
+The desktop app and the hub have their own installers, listed on the download
+page. Every downloadable file for all three components is published in the
+public core repository, so none of them needs a credential to fetch.
+
+## Source
+
+- [Core repository](https://github.com/unalcakir28/spacetrace): the nine crates
+  behind the command line tool and the agent, Apache-2.0. Architecture and
+  design decisions are documented in its `docs/` directory.
+
+## Other languages
+
+Every page above exists in five languages. English carries no prefix; the
+others are `/tr/`, `/it/`, `/fr/` and `/de/` — for example
+`https://spacetrace.teknobakkall.com/de/download/`. The English page is the
+`x-default`.

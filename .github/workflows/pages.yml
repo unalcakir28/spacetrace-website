@@ -102,6 +102,15 @@ jobs:
       # where an apostrophe reaches the page as `&#39;`.
       - run: yarn verify:changelog
 
+      # The discoverability metadata, checked against the built pages: a
+      # canonical and an absolute og:image on every one of them, a JSON-LD
+      # graph that parses, robots.txt pointing at a sitemap that exists, and
+      # every link in llms.txt resolving to a page this build produced. Each of
+      # those fails silently — a share turns back into a bare link, a graph is
+      # skipped rather than reported, a renamed route leaves llms.txt handing
+      # crawlers a 404.
+      - run: yarn verify:seo
+
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3

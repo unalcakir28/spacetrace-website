@@ -85,7 +85,19 @@ Verifies **against the built HTML**. Its first version compared raw text
 against raw HTML and missed all of French: the apostrophe lands on the page
 as `&#39;`.
 
-## 6. Changelog freshness, if needed
+## 6. Discoverability metadata
+
+```bash
+yarn verify:seo
+```
+
+Also **against the built output**. Every check in it is for something that
+fails without a symptom: a dropped `og:image` turns a share back into a bare
+link while the page looks identical, a relative one is ignored rather than
+rejected, a JSON-LD typo is skipped rather than reported, and a renamed route
+leaves `llms.txt` handing a 404 to exactly the crawlers it exists to serve.
+
+## 7. Changelog freshness, if needed
 
 ```bash
 yarn sync:changelog
@@ -97,7 +109,7 @@ it in core.** The workflow does this itself on every push and every six
 hours, so running it by hand is only necessary if you want to see a core
 change immediately.
 
-## 7. Download contract, if a release is near
+## 8. Download contract, if a release is near
 
 Not a command. The tag and asset names in `src/data/releases.ts` must be
 **exactly** the same as what the three release workflows in core produce.

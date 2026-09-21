@@ -17,5 +17,12 @@ export function t(locale: Locale): Dictionary {
 }
 
 export type { Dictionary };
-export { LOCALES, LOCALE_NAMES, LOCALE_TAGS, DEFAULT_LOCALE, isLocale } from "./config";
+export {
+  LOCALES,
+  LOCALE_NAMES,
+  LOCALE_TAGS,
+  OG_LOCALES,
+  DEFAULT_LOCALE,
+  isLocale,
+} from "./config";
 export type { Locale };

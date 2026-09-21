@@ -9,6 +9,7 @@
     "preview": "astro preview",
     "verify": "node scripts/verify-lang.mjs",
     "verify:changelog": "node scripts/verify-changelog.mjs",
+    "verify:seo": "node scripts/verify-seo.mjs",
     "sync:changelog": "node scripts/sync-changelog.mjs"
   },
   "dependencies": {

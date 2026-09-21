@@ -1,0 +1,50 @@
+# spacetrace — https://spacetrace.teknobakkall.com
+#
+# Everything here is public marketing copy and documentation. There is nothing
+# on this site that should not be crawled, so the policy is allow-all and the
+# reason this file exists at all is the Sitemap line: without it a crawler has
+# to discover 36 pages by following links.
+
+User-agent: *
+Allow: /
+
+# The AI crawlers, named rather than left to the wildcard above. The wildcard
+# already permits them, so these blocks change no behaviour today — they are
+# here so that narrowing the wildcard later is a deliberate act that has to
+# decide about each of them, instead of silently dropping the agents this
+# project most wants to be legible to. Documentation a model can read is the
+# point; see /llms.txt.
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://spacetrace.teknobakkall.com/sitemap-index.xml

@@ -14,12 +14,13 @@ yarn build                       # astro build → dist/
 yarn preview                     # serve the built dist/
 yarn verify                      # extracts the redirector from dist/, runs it
 yarn verify:changelog            # changelog texts against the built HTML
+yarn verify:seo                  # metadata, JSON-LD, robots.txt, llms.txt, og.png against dist/
 yarn sync:changelog              # refreshes the changelog.json copy from core
 ```
 
 **Node 22, pinned nowhere.** No `.nvmrc`, no `engines`, no `packageManager`. Single source be `node-version: 22` in `pages.yml`. Other version local diverge from CI, say nothing.
 
-**No test runner, no linter.** No vitest/jest/playwright, no ESLint, no Prettier. `scripts/verify-lang.mjs` and `scripts/verify-changelog.mjs` be whole test suite; `astro check` be whole lint. Write new verification as third `.mjs`, not test framework — both existing one run against built `dist/`, only way they catch bug class below.
+**No test runner, no linter.** No vitest/jest/playwright, no ESLint, no Prettier. `scripts/verify-lang.mjs`, `scripts/verify-changelog.mjs` and `scripts/verify-seo.mjs` be whole test suite; `astro check` be whole lint. Write new verification as fourth `.mjs`, not test framework — all three run against built `dist/`, only way they catch bug class below.
 
 **Do not type `yarn check`.** It be yarn 1.x builtin and shadow the script: it print "Folder in sync" and type-check nothing. That why script named `typecheck`, and why `no-yarn-check` hook refuse bare command.
 
@@ -33,13 +34,44 @@ What break easy:
 
 - **Dictionary typed against English.** `src/i18n/ui/en.ts` be source; other four conform through `Dictionary` type. Key added to one language and forgotten elsewhere be `yarn typecheck` error, not blank on live page. That why workflow type-check before build.
 - **Download contract be one file:** `src/data/releases.ts`.
-- **Static download link name real version tag and must move with it.** `CHANNELS[…].fallback` hold `v0.8.0`, `desktop-v0.7.0`, `hub-v0.5.0` — these be `href` baked into markup. They used to point at rolling `…-continuous` tag, which never go stale because republished every push; those tag removed 19 September 2026. Bump fallback in same commit as release, or every download button 404 for anyone whose JavaScript not run.
+- **Static download link name real version tag and must move with it.** `CHANNELS[…].fallback` hold `v0.8.0`, `desktop-v0.8.0`, `hub-v0.5.0` — these be `href` baked into markup. They used to point at rolling `…-continuous` tag, which never go stale because republished every push; those tag removed 19 September 2026. Bump fallback in same commit as release, or every download button 404 for anyone whose JavaScript not run.
 - **Download page that work with JS off be mandatory.** Markup link real file; `src/scripts/releases.ts` only layer version, date, size on top and upgrade link to newest stable release. Every step guarded, error swallowed.
 - **Interactive treemap be only React island** (`src/components/demo/`). Drawn with reasonable geometry on server too, so it look filled without JS.
 - **`base: "/"`** — every internal link go through `localeUrl()`. Hand-written path work in `astro dev` and 404 in production. That indirection let site leave core repo for own domain in one line.
 - **`public/CNAME` carry domain.** Delete it and Pages fall back to default address; certificate drop with it.
 
-`@astrojs/sitemap` run with `i18n` config; output be `dist/sitemap-index.xml` (35 URL, 404 excluded). **`robots.txt` not in repo** — absence be SEO work not done, not decision. Rest of SEO and AI-discoverability work, with measurement, sit in core repo `TODO.md` under "Post-launch — SEO and AISEO".
+`@astrojs/sitemap` run with `i18n` config; output be `dist/sitemap-index.xml` (35 URL, 404 excluded).
+
+## Discoverability: robot and AI crawler
+
+Done 21 September 2026. Whole surface live in **one head**, `src/layouts/Base.astro`, plus two static file and two data module.
+
+| Thing | Where |
+| ---- | ---- |
+| `robots.txt` | `public/robots.txt`. Allow-all; **`Sitemap:` line be only reason file exist**. Eleven AI crawler named explicit (`GPTBot`, `ClaudeBot`, `PerplexityBot`, `Google-Extended`, …) — wildcard already permit them, so name change no behaviour today; it make future narrowing decide about each one instead of drop them silent |
+| `llms.txt` | `public/llms.txt`. English only, convention no multilingual. **No version number in it** — nothing would keep it true |
+| JSON-LD | `src/data/structuredData.ts`. One `@graph` per page, `@id` cross-reference. `Organization` + `WebSite` + `WebPage` everywhere, `BreadcrumbList` off home, `SoftwareApplication` on `cli`/`desktop`/`hub` |
+| `og:image`, verification token, site name | `src/data/seo.ts` |
+| Share card source | `scripts/og-card.html` → `public/og.png`, 1200×630. **No `yarn og`** — regenerate by hand, step in that file header. Script that drive browser need either big devDependency this repo decide against, or Chrome `--screenshot` flag, which hang on current Chrome. `verify:seo` read real dimension out of PNG, so wrong size or blank render caught |
+| Guard | `scripts/verify-seo.mjs`, `yarn verify:seo`, run in `pages.yml` |
+
+Three rule, each one cost feature on purpose:
+
+1. **`offers` only where price be permanent.** CLI and agent be Apache-2.0 and free, so they price themself. Desktop be free *while in phase 3* and hub be commercial; structured data cannot say "for now", so price there be claim that expire quiet. Those two declare what they be and what they run on, nothing about money.
+2. **No `softwareVersion` anywhere.** It would be third place release must bump, next to `releases.ts` and core own file, and one nothing guard.
+3. **No `FAQPage`, no invented `sameAs`.** Guide page have no real question-answer structure and project have no social account. Schema for thing that no exist be spam.
+
+**`operatingSystem` differ per component.** Hub publish Linux and macOS binary, **no Windows**. Copy desktop list across be easy mistake and tell crawler something false.
+
+**`OG_LOCALES` and `LOCALE_TAGS` be two map on purpose.** `og:locale` want `en_US`; `hreflang` and `lang` attribute want bare `en`, and bare form be correct there. Collapse them and one of two break silent — scraper ignore short form without complain.
+
+**Share card be one image for every page and language.** Page-specific part of share already carry by translated `og:title`/`og:description`. Seven per-page card each bake page name into pixel, and `verify-seo.mjs` cannot read text out of PNG — so renamed page leave wrong image with nothing to catch it.
+
+**`yarn verify:seo` have teeth, measured by mutation** (21 September 2026): drop `og:image`, shorten `og:locale` to `en`, put non-JSON in `ld+json` script, rename route in `llms.txt` — four of four caught. `og.png` dimension read out of PNG IHDR chunk, no dependency.
+
+**Search Console and Bing be account task, not code.** `VERIFICATION` in `src/data/seo.ts` hold empty string and render **no tag** when empty, because empty meta tag be failed verification that look like done one. Paste Google token there; Bing import verified property from Search Console, so usually no need own.
+
+Still open, core `TODO.md`: Google Search Console + Bing registration (token), and self-host Google Font woff2 to drop one render-blocking third-party request — that be performance item, kept separate.
 
 ## Claude tooling kept in the repo
 
@@ -48,6 +80,7 @@ What break easy:
 | `preflight` (skill) | Before a push; a push goes straight to production |
 | `web-design-guidelines` (skill) | UI review; vendored from `vercel-labs/agent-skills` (`23cb294`) |
 | `no-yarn-check` (hook) | Refuses the bare `yarn check` |
+| `stale-dist-guard` (hook) | Refuses any `yarn verify*` while `dist/` older than source — all three verify script read built output, so stale one be false pass |
 
 `preflight` **trigger on own**; push here deploy, so that where it worth most.
 
@@ -55,7 +88,7 @@ Until 16 September 2026 vendored skill sat under `.agents/skills/` and never loa
 
 From shared `spacetrace-tools` plugin (install it, and full list, sit in workspace note and plugin README), the one that matter here be **`download-contract`**: it compare tag and asset name in `src/data/releases.ts` against what core release workflow make. **This repo be other end of that contract and no CI see both end**, so plugin be only check either side get — skill compare them, and `download-contract-drift` Stop hook ask when session move `releases.ts` and leave producing end alone.
 
-**That hook read `git status`, so it blind to release cut in earlier session** — tree clean, hook silent. `release-landed-guard` SessionStart hook cover that side: it ask GitHub what be published and compare against `CHANNELS[…].fallback` here and against last successful `pages.yml` run. It catch exact thing that got missed — `desktop-v0.8.0` out 19 September 15:04 UTC, last site build 10:49 same day, page offer 0.7.0 for two day. `release-landed` skill be manual form of same four check. Also `doc-drift-auditor`, `workspace-audit`, `code-reviewer`. Plugin private and this repo public, so it named not linked.
+**That hook read `git status`, so it blind to release cut in earlier session** — tree clean, hook silent. `release-landed-guard` SessionStart hook cover that side: it ask GitHub what be published and compare against `CHANNELS[…].fallback` here and against last successful `pages.yml` run. It catch exact thing that got missed — `desktop-v0.8.0` out 19 September 15:04 UTC, last site build 10:49 same day, page offer 0.7.0 for two day. `release-landed` skill be manual form of same four check. Also `doc-drift-auditor`, `workspace-audit`, `code-reviewer`, and `doc-number-guard` hook, which at Stop count route and page here and compare against number this file state. Plugin private and this repo public, so it named not linked.
 
 ### Automatic language detection
 
@@ -74,7 +107,7 @@ After redirect, target page show notice bar once (`LangNotice.astro`): one sente
 
 `yarn verify` (`scripts/verify-lang.mjs`) extract redirector from `dist/` and run it in fake browser, measure where reader land in 21 case. Run after `yarn build` in Pages workflow.
 
-**Local `dist/` can be stale.** `verify` and `verify:changelog` read built output, not source. Green without fresh `yarn build` mean you verified old site.
+**Local `dist/` can be stale.** `verify` and `verify:changelog` read built output, not source. Green without fresh `yarn build` mean you verified old site. `stale-dist-guard` hook refuse both command when any source newer than `dist/index.html`, because false pass be worse than missing check — Pages workflow never hit this, it build in clean checkout and verify right after, so no CI can catch it.
 
 Step exist because feature once **shipped to production inert**. In Astro, wrap inline script body as JSX child with `` {`…`} `` print wrapper into HTML: code become string, evaluated in block, discarded. Build green, script on page, `window.location.replace` appear inside it, nothing happen. Any check for "is there a script" or "does it contain this expression" would pass it. Run it — only check with teeth.
 
