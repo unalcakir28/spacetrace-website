@@ -38,7 +38,7 @@ export type Component = "desktop" | "cli" | "hub";
  */
 export const CHANNELS: Record<Component, { fallback: string; stable: RegExp }> = {
   desktop: { fallback: "desktop-v0.8.0", stable: /^desktop-v\d/ },
-  cli: { fallback: "v0.9.0", stable: /^v\d/ },
+  cli: { fallback: "v0.9.1", stable: /^v\d/ },
   hub: { fallback: "hub-v0.5.0", stable: /^hub-v\d/ },
 };
 
@@ -110,31 +110,31 @@ export const CLI_ASSETS: Asset[] = [
   {
     component: "cli",
     match: "aarch64-apple-darwin.tar.gz",
-    fallbackName: "spacetrace-v0.9.0-aarch64-apple-darwin.tar.gz",
+    fallbackName: "spacetrace-v0.9.1-aarch64-apple-darwin.tar.gz",
     os: "macos",
   },
   {
     component: "cli",
     match: "x86_64-apple-darwin.tar.gz",
-    fallbackName: "spacetrace-v0.9.0-x86_64-apple-darwin.tar.gz",
+    fallbackName: "spacetrace-v0.9.1-x86_64-apple-darwin.tar.gz",
     os: "macos",
   },
   {
     component: "cli",
     match: "x86_64-unknown-linux-musl.tar.gz",
-    fallbackName: "spacetrace-v0.9.0-x86_64-unknown-linux-musl.tar.gz",
+    fallbackName: "spacetrace-v0.9.1-x86_64-unknown-linux-musl.tar.gz",
     os: "linux",
   },
   {
     component: "cli",
     match: "aarch64-unknown-linux-musl.tar.gz",
-    fallbackName: "spacetrace-v0.9.0-aarch64-unknown-linux-musl.tar.gz",
+    fallbackName: "spacetrace-v0.9.1-aarch64-unknown-linux-musl.tar.gz",
     os: "linux",
   },
   {
     component: "cli",
     match: "x86_64-pc-windows-msvc.zip",
-    fallbackName: "spacetrace-v0.9.0-x86_64-pc-windows-msvc.zip",
+    fallbackName: "spacetrace-v0.9.1-x86_64-pc-windows-msvc.zip",
     os: "windows",
     primary: true,
   },
