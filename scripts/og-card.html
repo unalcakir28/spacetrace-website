@@ -11,11 +11,14 @@
   look foreign, that is the signal to render it again.
 
   TO REGENERATE:
-    1. Serve this directory over HTTP — a file:// URL cannot load the web font,
-       and the headline is the font. Anything will do:
+    1. Serve the repository root over HTTP — a file:// URL cannot load the
+       web font, and the headline is the font. The root, not this directory,
+       because the font is the site's own file in public/fonts/, reached as
+       ../public/…; that keeps the card on the exact bytes the site serves.
+       Anything will do:
          python3 -m http.server 8391 --bind 127.0.0.1
-    2. Open http://127.0.0.1:8391/og-card.html with the viewport set to exactly
-       1200×630 and screenshot it at device scale, to public/og.png.
+    2. Open http://127.0.0.1:8391/scripts/og-card.html with the viewport set to
+       exactly 1200×630 and screenshot it at device scale, to public/og.png.
     3. `yarn build && yarn verify:seo` — it reads the PNG's real dimensions out
        of the file and refuses one that is the wrong size or suspiciously small,
        which is what a blank render looks like.
@@ -31,12 +34,20 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=block"
-    />
     <style>
+      /* The latin file only: the card's text is English and ASCII. `block`,
+         not the site's `swap`, so a screenshot taken a moment early shows
+         nothing rather than the fallback font, and a blank card is what
+         verify:seo already refuses. */
+      @font-face {
+        font-family: "Archivo";
+        font-style: normal;
+        font-weight: 400 800;
+        font-stretch: 62% 125%;
+        font-display: block;
+        src: url("../public/fonts/archivo/archivo-latin.woff2") format("woff2");
+      }
+
       :root {
         --ink: #080b14;
         --bg: #0d1120;

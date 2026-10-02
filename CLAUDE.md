@@ -28,7 +28,7 @@ yarn sync:changelog              # refreshes the changelog.json copy from core
 
 Astro 7. Five language (en, tr, it, fr, de) and **36 static pages** (7 route × 5 language under `src/pages/`, plus `404`). `pages.yml` build it, upload to GitHub Pages, served from `spacetrace.teknobakkall.com`.
 
-Layer: `src/pages/[lang]/*.astro` be thin wrapper that only set up `getStaticPaths` and call view. Content be seven file in `src/views/`; single layout be `src/layouts/Base.astro`. **No Tailwind** — one hand-written `src/styles/global.css` (16 KB, typography and layout system redesigned in `6c2449a`) plus `src/components/demo/treemap.css` for React island. No content collection; data be plain TS/JSON in `src/data/`. `trailingSlash: "always"`.
+Layer: `src/pages/[lang]/*.astro` be thin wrapper that only set up `getStaticPaths` and call view. Content be seven file in `src/views/`; single layout be `src/layouts/Base.astro`. **No Tailwind** — one hand-written `src/styles/global.css` (19 KB, typography and layout system redesigned in `6c2449a`, `@font-face` rules at top) plus `src/components/demo/treemap.css` for React island. No content collection; data be plain TS/JSON in `src/data/`. `trailingSlash: "always"`.
 
 What break easy:
 
@@ -39,6 +39,7 @@ What break easy:
 - **Interactive treemap be only React island** (`src/components/demo/`). Drawn with reasonable geometry on server too, so it look filled without JS.
 - **`base: "/"`** — every internal link go through `localeUrl()`. Hand-written path work in `astro dev` and 404 in production. That indirection let site leave core repo for own domain in one line.
 - **`public/CNAME` carry domain.** Delete it and Pages fall back to default address; certificate drop with it.
+- **Fonts self-hosted, no third-party request** (2 October 2026). Archivo and JetBrains Mono woff2 in `public/fonts/<family>/`, each with its `OFL.txt` — licence require it ship with file. `@font-face` at top of `global.css`, `unicode-range` copied verbatim from Google. Only latin + latin-ext kept; vietnamese, greek, cyrillic dropped because no character on site used them — add text in those script and it render in fallback. Files variable (Archivo `wght`+`wdth`, Mono `wght`), so headline width come from `font-stretch`; static cut would flatten every heading silent. Preload only Archivo latin, plus latin-ext on `tr`.
 
 `@astrojs/sitemap` run with `i18n` config; output be `dist/sitemap-index.xml` (35 URL, 404 excluded).
 
@@ -71,7 +72,7 @@ Three rule, each one cost feature on purpose:
 
 **Search Console and Bing be account task, not code.** `VERIFICATION` in `src/data/seo.ts` hold empty string and render **no tag** when empty, because empty meta tag be failed verification that look like done one. Paste Google token there; Bing import verified property from Search Console, so usually no need own.
 
-Still open, core `TODO.md`: Google Search Console + Bing registration (token), and self-host Google Font woff2 to drop one render-blocking third-party request — that be performance item, kept separate.
+Still open, core `TODO.md`: Google Search Console + Bing registration (token).
 
 ## Claude tooling kept in the repo
 
